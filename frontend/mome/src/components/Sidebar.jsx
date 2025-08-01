@@ -1,7 +1,8 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
-  FiHome, FiUser, FiKey, FiSettings, FiHeadphones, FiLogOut, FiGift, FiInfo, FiNavigation, FiAlertTriangle
+  FiHome, FiUser, FiKey, FiSettings, FiHeadphones, FiLogOut, FiGift, FiInfo, FiNavigation, FiAlertTriangle,
+  FiMap
 } from 'react-icons/fi';
 import './Sidebar.css';
 
@@ -21,6 +22,7 @@ const Sidebar = () => {
           <NavLink to="/dashboard"><FiHome /> Dashboard</NavLink>
           <NavLink to="/alerts"><FiAlertTriangle /> Alerts</NavLink>
           <NavLink to="/simulate"><FiNavigation /> Simulation</NavLink>
+          <NavLink to="/live-route"><FiMap /> Live Routes</NavLink>
           <NavLink to="/rewards"><FiGift /> Rewards</NavLink>
           <NavLink to="/profile"><FiUser /> Profile</NavLink>
           <NavLink to="/settings"><FiSettings /> Vehicle Settings</NavLink>

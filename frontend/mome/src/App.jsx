@@ -14,6 +14,7 @@ import RewardsPage from './pages/RewardsPage';
 import RouteSimulationPage from './pages/RouteSimulationPage';
 import UserProfile from './pages/UserProfile';
 import VehicleSettings from './pages/VehicleSettings';
+import LiveRoute from "./pages/LiveRoute";
 
 // Sidebar Component
 import Sidebar from './components/Sidebar'; // adjust path if needed
@@ -58,6 +59,7 @@ const App = () => {
           <Route path="/simulate" element={<RouteSimulationPage />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/settings" element={<VehicleSettings />} />
+          <Route path="/live-route" element={<LiveRoute />} />
         </Route>
 
         {/* 404 Fallback */}
