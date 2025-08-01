@@ -1,13 +1,12 @@
-// App.jsx
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 
-// Auth Pages
+// Auth Screens
 import Login from './auth/Login';
 import Signup from './auth/Signup';
 import ForgotPassword from './auth/ForgotPassword';
 
-// App Pages
+// App Screens
 import AboutPage from './pages/AboutPage';
 import AlertHistoryPage from './pages/AlertHistoryPage';
 import Dashboard from './pages/Dashboard';
@@ -16,12 +15,16 @@ import RouteSimulationPage from './pages/RouteSimulationPage';
 import UserProfile from './pages/UserProfile';
 import VehicleSettings from './pages/VehicleSettings';
 
+const isAuthenticated = () => {
+  return !!localStorage.getItem('token');
+};
+
+// Protect routes wrapper
+const ProtectedRoute = () => {
+  return isAuthenticated() ? <Outlet /> : <Navigate to="/login" />;
+};
 
 const App = () => {
-  const isAuthenticated = () => {
-    return !!localStorage.getItem('token'); // Replace with real auth check
-  };
-
   return (
     <Router>
       <Routes>
@@ -29,23 +32,20 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route
-          path="/"
-          element={<Navigate to={isAuthenticated() ? '/dashboard' : '/login'} />}
-        />
+
+        {/* Redirect Root */}
+        <Route path="/" element={<Navigate to={isAuthenticated() ? '/dashboard' : '/login'} />} />
 
         {/* Protected Routes */}
-        {isAuthenticated() && (
-          <>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/rewards" element={<RewardsPage />} />
-            <Route path="/alerts" element={<AlertHistoryPage />} />
-            <Route path="/simulate" element={<RouteSimulationPage />} />
-            <Route path="/profile" element={<UserProfile />} />
-            <Route path="/settings" element={<VehicleSettings />} />
-          </>
-        )}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/rewards" element={<RewardsPage />} />
+          <Route path="/alerts" element={<AlertHistoryPage />} />
+          <Route path="/simulate" element={<RouteSimulationPage />} />
+          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/settings" element={<VehicleSettings />} />
+        </Route>
 
         {/* 404 Fallback */}
         <Route

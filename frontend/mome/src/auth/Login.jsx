@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // 👈 added
+import { useNavigate, Link } from 'react-router-dom';
 import {
   FiEye,
   FiEyeOff,
@@ -7,10 +7,10 @@ import {
   FiLock,
   FiAlertCircle
 } from 'react-icons/fi';
-import './Login.css'; 
+import './Login.css';
 
 const Login = () => {
-  const navigate = useNavigate(); // 👈 added
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -47,10 +47,9 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log('Logging in with:', email, password);
-      // mock login success: set token, redirect
-      localStorage.setItem('token', 'dummy_token'); // optional
-      navigate('/dashboard'); // 👈 redirect to dashboard
+      // Simulate login
+      localStorage.setItem('token', 'dummy_token');
+      navigate('/dashboard');
     }
   };
 
@@ -74,11 +73,7 @@ const Login = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="login-form" noValidate>
-          <div
-            className={`form-group ${isFocused.email ? 'focused' : ''} ${
-              errors.email ? 'error' : ''
-            }`}
-          >
+          <div className={`form-group ${isFocused.email ? 'focused' : ''} ${errors.email ? 'error' : ''}`}>
             <label>Email</label>
             <div className="input-wrapper">
               <FiAtSign className="input-icon" />
@@ -103,11 +98,7 @@ const Login = () => {
             )}
           </div>
 
-          <div
-            className={`form-group ${isFocused.password ? 'focused' : ''} ${
-              errors.password ? 'error' : ''
-            }`}
-          >
+          <div className={`form-group ${isFocused.password ? 'focused' : ''} ${errors.password ? 'error' : ''}`}>
             <label>Password</label>
             <div className="input-wrapper">
               <FiLock className="input-icon" />
@@ -145,9 +136,9 @@ const Login = () => {
               <input type="checkbox" id="remember" />
               <label htmlFor="remember">Remember me</label>
             </div>
-            <a href="#" className="forgot-password">
+            <Link to="/forgot-password" className="forgot-password">
               Forgot password?
-            </a>
+            </Link>
           </div>
 
           <button type="submit" className="login-button">
@@ -157,7 +148,7 @@ const Login = () => {
 
         <div className="login-footer">
           <p>
-            Don't have an account? <a href="#">Sign up</a>
+            Don't have an account? <Link to="/signup">Sign up</Link>
           </p>
         </div>
       </div>
