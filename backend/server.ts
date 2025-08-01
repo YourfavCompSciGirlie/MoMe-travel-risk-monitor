@@ -4,6 +4,8 @@ import cors from 'cors';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
 import vehicleRoutes from './routes/vehicleRoutes';
+import alertRoutes from './routes/alertRoutes';
+import riskScoreRoutes from './routes/riskScoreRoutes';
 
 dotenv.config();
 
@@ -18,6 +20,8 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/vehicles', vehicleRoutes);
+app.use('/api/alerts', alertRoutes);
+app.use('/api/risk-score', riskScoreRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
