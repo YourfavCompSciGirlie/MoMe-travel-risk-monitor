@@ -9,11 +9,12 @@
 }
 
 body {
-  margin: 0;
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  background-color: #f5f7fa;
-  color: #333;
+  margin: 0 !important;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif !important;
+  background-color: #f5f7fa !important;
+  color: #333 !important;
 }
+
 
 .dashboard-container {
   padding: 2rem;
