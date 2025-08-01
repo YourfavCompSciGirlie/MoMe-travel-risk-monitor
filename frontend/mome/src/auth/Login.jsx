@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // 👈 added
 import {
   FiEye,
   FiEyeOff,
@@ -6,9 +7,10 @@ import {
   FiLock,
   FiAlertCircle
 } from 'react-icons/fi';
-import './Login.css'; // Assuming you have a CSS file for styling
+import './Login.css'; 
 
 const Login = () => {
+  const navigate = useNavigate(); // 👈 added
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -46,7 +48,9 @@ const Login = () => {
     e.preventDefault();
     if (validateForm()) {
       console.log('Logging in with:', email, password);
-      // Submit to your backend here
+      // mock login success: set token, redirect
+      localStorage.setItem('token', 'dummy_token'); // optional
+      navigate('/dashboard'); // 👈 redirect to dashboard
     }
   };
 

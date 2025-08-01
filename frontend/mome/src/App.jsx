@@ -4,8 +4,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 // Auth Pages
 import Login from './auth/Login';
+import Signup from './auth/Signup';
+import ForgotPassword from './auth/ForgotPassword';
 
-// Pages
+// App Pages
 import AboutPage from './pages/AboutPage';
 import AlertHistoryPage from './pages/AlertHistoryPage';
 import Dashboard from './pages/Dashboard';
@@ -17,16 +19,22 @@ import VehicleSettings from './pages/VehicleSettings';
 
 const App = () => {
   const isAuthenticated = () => {
-    // Basic mock authentication check – replace with real logic
-    return !!localStorage.getItem('token');
+    return !!localStorage.getItem('token'); // Replace with real auth check
   };
 
   return (
     <Router>
       <Routes>
+        {/* Public Routes */}
         <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Navigate to={isAuthenticated() ? "/dashboard" : "/login"} />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route
+          path="/"
+          element={<Navigate to={isAuthenticated() ? '/dashboard' : '/login'} />}
+        />
 
+        {/* Protected Routes */}
         {isAuthenticated() && (
           <>
             <Route path="/dashboard" element={<Dashboard />} />
@@ -39,8 +47,15 @@ const App = () => {
           </>
         )}
 
-        {/* Fallback for 404 */}
-        <Route path="*" element={<h2 style={{ textAlign: 'center', marginTop: '20px' }}>404: Page Not Found</h2>} />
+        {/* 404 Fallback */}
+        <Route
+          path="*"
+          element={
+            <div style={{ padding: '2rem', textAlign: 'center' }}>
+              <h2>404: Page Not Found</h2>
+            </div>
+          }
+        />
       </Routes>
     </Router>
   );
