@@ -15,13 +15,26 @@ import RouteSimulationPage from './pages/RouteSimulationPage';
 import UserProfile from './pages/UserProfile';
 import VehicleSettings from './pages/VehicleSettings';
 
+// Sidebar Component
+import Sidebar from './components/Sidebar'; // adjust path if needed
+
+// Check if user is authenticated
 const isAuthenticated = () => {
   return !!localStorage.getItem('token');
 };
 
-// Protect routes wrapper
+// Wraps protected routes with sidebar layout
 const ProtectedRoute = () => {
-  return isAuthenticated() ? <Outlet /> : <Navigate to="/login" />;
+  return isAuthenticated() ? (
+    <div style={{ display: 'flex' }}>
+      <Sidebar />
+      <main style={{ marginLeft: '230px', padding: '2rem', flex: 1 }}>
+        <Outlet />
+      </main>
+    </div>
+  ) : (
+    <Navigate to="/login" />
+  );
 };
 
 const App = () => {
@@ -33,10 +46,10 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        {/* Redirect Root */}
+        {/* Redirect from root */}
         <Route path="/" element={<Navigate to={isAuthenticated() ? '/dashboard' : '/login'} />} />
 
-        {/* Protected Routes */}
+        {/* Protected Routes with Sidebar Layout */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/about" element={<AboutPage />} />
