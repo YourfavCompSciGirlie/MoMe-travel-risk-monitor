@@ -1,6 +1,5 @@
-/**
- * Represents a record in the 'users' table
- */
+// types/user.ts
+
 export interface User {
   id: number;
   name: string;
