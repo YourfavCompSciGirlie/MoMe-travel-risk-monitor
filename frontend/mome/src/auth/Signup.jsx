@@ -9,7 +9,6 @@ import {
   FiLock,
   FiAlertCircle
 } from 'react-icons/fi';
-import './SignUp.css';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -157,27 +156,266 @@ const SignUp = () => {
     setShowPassword({ ...showPassword, [field]: !showPassword[field] });
   };
 
+  // Styles
+  const styles = {
+    signupContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #10367D 0%, #1a4b9d 100%)',
+      padding: '20px',
+      position: 'relative',
+      overflow: 'hidden'
+    },
+    bgBubbles: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      zIndex: 0
+    },
+    bubble: {
+      position: 'absolute',
+      borderRadius: '50%',
+      background: 'rgba(255, 255, 255, 0.1)',
+      backdropFilter: 'blur(5px)'
+    },
+    bubble1: {
+      width: '150px',
+      height: '150px',
+      top: '20%',
+      left: '10%'
+    },
+    bubble2: {
+      width: '250px',
+      height: '250px',
+      bottom: '10%',
+      right: '15%'
+    },
+    bubble3: {
+      width: '80px',
+      height: '80px',
+      top: '60%',
+      left: '70%'
+    },
+    bubble4: {
+      width: '120px',
+      height: '120px',
+      top: '30%',
+      right: '10%'
+    },
+    signupCard: {
+      position: 'relative',
+      width: '100%',
+      maxWidth: '520px',
+      background: 'rgba(255, 255, 255, 0.15)',
+      borderRadius: '16px',
+      boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+      padding: '40px',
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)',
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+      zIndex: 1
+    },
+    signupHeader: {
+      textAlign: 'center',
+      marginBottom: '32px'
+    },
+    signupHeaderH2: {
+      color: '#FFFFFF',
+      fontSize: '28px',
+      fontWeight: 600,
+      marginBottom: '8px'
+    },
+    signupHeaderP: {
+      color: 'rgba(255, 255, 255, 0.8)',
+      fontSize: '14px'
+    },
+    signupForm: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '20px'
+    },
+    formRow: {
+      display: 'flex',
+      gap: '20px'
+    },
+    formGroup: {
+      position: 'relative',
+      flex: 1
+    },
+    formLabel: {
+      display: 'block',
+      marginBottom: '8px',
+      color: 'rgba(255, 255, 255, 0.9)',
+      fontSize: '14px',
+      fontWeight: 500
+    },
+    inputWrapper: {
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center'
+    },
+    inputIcon: {
+      position: 'absolute',
+      left: '16px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      color: '#FFFFFF',
+      fontSize: '18px',
+      opacity: 0.8,
+      pointerEvents: 'none'
+    },
+    inputField: {
+      width: '100%',
+      padding: '14px 44px 14px 44px',
+      border: '1px solid rgba(255, 255, 255, 0.3)',
+      borderRadius: '8px',
+      fontSize: '14px',
+      color: '#FFFFFF',
+      transition: 'all 0.3s ease',
+      background: 'rgba(255, 255, 255, 0.1)',
+      backdropFilter: 'blur(5px)'
+    },
+    inputFieldError: {
+      borderColor: '#FF6B6B',
+      paddingRight: '44px'
+    },
+    inputFieldFocused: {
+      outline: 'none',
+      borderColor: '#a2bd39',
+      boxShadow: '0 0 0 3px rgba(165, 206, 0, 0.2)',
+      background: 'rgba(255, 255, 255, 0.2)'
+    },
+    passwordToggle: {
+      position: 'absolute',
+      right: '16px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      background: 'none',
+      border: 'none',
+      color: '#FFFFFF',
+      opacity: 0.7,
+      cursor: 'pointer',
+      fontSize: '18px',
+      padding: 0,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    errorMessage: {
+      display: 'flex',
+      alignItems: 'center',
+      marginTop: '8px',
+      color: '#FF6B6B',
+      fontSize: '12px',
+      fontWeight: 500
+    },
+    errorIcon: {
+      marginRight: '6px',
+      fontSize: '14px',
+      color: '#FF6B6B'
+    },
+    passwordHints: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '8px',
+      marginTop: '8px'
+    },
+    passwordHint: {
+      fontSize: '12px',
+      color: 'rgba(255, 255, 255, 0.6)'
+    },
+    passwordHintValid: {
+      color: '#a2bd39'
+    },
+    formOptions: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      margin: '10px 0'
+    },
+    termsAgreement: {
+      display: 'flex',
+      alignItems: 'center',
+      fontSize: '13px',
+      color: 'rgba(255, 255, 255, 0.8)'
+    },
+    termsLink: {
+      color: 'white',
+      textDecoration: 'none',
+      margin: '0 4px'
+    },
+    signupButton: {
+      width: '100%',
+      padding: '14px',
+      backgroundColor: '#a2bd39',
+      color: 'white',
+      border: 'none',
+      borderRadius: '8px',
+      fontSize: '16px',
+      fontWeight: 600,
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      marginTop: '10px'
+    },
+    signupFooter: {
+      textAlign: 'center',
+      marginTop: '24px',
+      paddingTop: '16px',
+      borderTop: '1px solid rgba(255, 255, 255, 0.2)'
+    },
+    signupFooterP: {
+      color: 'rgba(255, 255, 255, 0.7)',
+      fontSize: '14px'
+    },
+    signupFooterA: {
+      color: 'white',
+      textDecoration: 'none',
+      fontWeight: 500
+    }
+  };
+
+  // Since inline styles don't support pseudo-elements like ::placeholder,
+  // we'll create a style tag for the placeholder styles
+  const placeholderStyles = `
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.7) !important;
+    }
+    input:-ms-input-placeholder {
+      color: rgba(255, 255, 255, 0.7) !important;
+    }
+    input::-ms-input-placeholder {
+      color: rgba(255, 255, 255, 0.7) !important;
+    }
+  `;
+
   return (
-    <div className="signup-container">
-      <div className="bg-bubbles">
-        <div className="bubble bubble-1"></div>
-        <div className="bubble bubble-2"></div>
-        <div className="bubble bubble-3"></div>
-        <div className="bubble bubble-4"></div>
+    <div style={styles.signupContainer}>
+      {/* Add the style tag for placeholder styling */}
+      <style>{placeholderStyles}</style>
+      
+      <div style={styles.bgBubbles}>
+        <div style={{...styles.bubble, ...styles.bubble1}}></div>
+        <div style={{...styles.bubble, ...styles.bubble2}}></div>
+        <div style={{...styles.bubble, ...styles.bubble3}}></div>
+        <div style={{...styles.bubble, ...styles.bubble4}}></div>
       </div>
 
-      <div className="signup-card">
-        <div className="signup-header">
-          <h2>Create an Account</h2>
-          <p>Join us today!</p>
+      <div style={styles.signupCard}>
+        <div style={styles.signupHeader}>
+          <h2 style={styles.signupHeaderH2}>Create an Account</h2>
+          <p style={styles.signupHeaderP}>Join us today!</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="signup-form" noValidate>
-          <div className="form-row">
-            <div className={`form-group ${isFocused.name ? 'focused' : ''} ${errors.name ? 'error' : ''}`}>
-              <label>Name</label>
-              <div className="input-wrapper">
-                <FiUser className="input-icon" />
+        <form onSubmit={handleSubmit} style={styles.signupForm} noValidate>
+          <div style={styles.formRow}>
+            <div style={styles.formGroup}>
+              <label style={styles.formLabel}>Name</label>
+              <div style={styles.inputWrapper}>
+                <FiUser style={styles.inputIcon} />
                 <input
                   type="text"
                   name="name"
@@ -187,20 +425,25 @@ const SignUp = () => {
                   onBlur={() => handleBlur('name')}
                   placeholder="Enter your name"
                   required
+                  style={{
+                    ...styles.inputField,
+                    ...(isFocused.name ? styles.inputFieldFocused : {}),
+                    ...(errors.name ? styles.inputFieldError : {})
+                  }}
                 />
               </div>
               {errors.name && (
-                <div className="error-message">
-                  <FiAlertCircle className="error-icon" />
+                <div style={styles.errorMessage}>
+                  <FiAlertCircle style={styles.errorIcon} />
                   <span>{errors.name}</span>
                 </div>
               )}
             </div>
 
-            <div className={`form-group ${isFocused.surname ? 'focused' : ''} ${errors.surname ? 'error' : ''}`}>
-              <label>Surname</label>
-              <div className="input-wrapper">
-                <FiUser className="input-icon" />
+            <div style={styles.formGroup}>
+              <label style={styles.formLabel}>Surname</label>
+              <div style={styles.inputWrapper}>
+                <FiUser style={styles.inputIcon} />
                 <input
                   type="text"
                   name="surname"
@@ -210,22 +453,27 @@ const SignUp = () => {
                   onBlur={() => handleBlur('surname')}
                   placeholder="Enter your surname"
                   required
+                  style={{
+                    ...styles.inputField,
+                    ...(isFocused.surname ? styles.inputFieldFocused : {}),
+                    ...(errors.surname ? styles.inputFieldError : {})
+                  }}
                 />
               </div>
               {errors.surname && (
-                <div className="error-message">
-                  <FiAlertCircle className="error-icon" />
+                <div style={styles.errorMessage}>
+                  <FiAlertCircle style={styles.errorIcon} />
                   <span>{errors.surname}</span>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="form-row">
-            <div className={`form-group ${isFocused.phone ? 'focused' : ''} ${errors.phone ? 'error' : ''}`}>
-              <label>Phone Number</label>
-              <div className="input-wrapper">
-                <FiPhone className="input-icon" />
+          <div style={styles.formRow}>
+            <div style={styles.formGroup}>
+              <label style={styles.formLabel}>Phone Number</label>
+              <div style={styles.inputWrapper}>
+                <FiPhone style={styles.inputIcon} />
                 <input
                   type="tel"
                   name="phone"
@@ -235,20 +483,25 @@ const SignUp = () => {
                   onBlur={() => handleBlur('phone')}
                   placeholder="+27XXXXXXXXX"
                   required
+                  style={{
+                    ...styles.inputField,
+                    ...(isFocused.phone ? styles.inputFieldFocused : {}),
+                    ...(errors.phone ? styles.inputFieldError : {})
+                  }}
                 />
               </div>
               {errors.phone && (
-                <div className="error-message">
-                  <FiAlertCircle className="error-icon" />
+                <div style={styles.errorMessage}>
+                  <FiAlertCircle style={styles.errorIcon} />
                   <span>{errors.phone}</span>
                 </div>
               )}
             </div>
 
-            <div className={`form-group ${isFocused.email ? 'focused' : ''} ${errors.email ? 'error' : ''}`}>
-              <label>Email</label>
-              <div className="input-wrapper">
-                <FiAtSign className="input-icon" />
+            <div style={styles.formGroup}>
+              <label style={styles.formLabel}>Email</label>
+              <div style={styles.inputWrapper}>
+                <FiAtSign style={styles.inputIcon} />
                 <input
                   type="email"
                   name="email"
@@ -258,22 +511,27 @@ const SignUp = () => {
                   onBlur={() => handleBlur('email')}
                   placeholder="Enter your email"
                   required
+                  style={{
+                    ...styles.inputField,
+                    ...(isFocused.email ? styles.inputFieldFocused : {}),
+                    ...(errors.email ? styles.inputFieldError : {})
+                  }}
                 />
               </div>
               {errors.email && (
-                <div className="error-message">
-                  <FiAlertCircle className="error-icon" />
+                <div style={styles.errorMessage}>
+                  <FiAlertCircle style={styles.errorIcon} />
                   <span>{errors.email}</span>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="form-row">
-            <div className={`form-group ${isFocused.password ? 'focused' : ''} ${errors.password ? 'error' : ''}`}>
-              <label>Password</label>
-              <div className="input-wrapper">
-                <FiLock className="input-icon" />
+          <div style={styles.formRow}>
+            <div style={styles.formGroup}>
+              <label style={styles.formLabel}>Password</label>
+              <div style={styles.inputWrapper}>
+                <FiLock style={styles.inputIcon} />
                 <input
                   type={showPassword.password ? 'text' : 'password'}
                   name="password"
@@ -283,10 +541,15 @@ const SignUp = () => {
                   onBlur={() => handleBlur('password')}
                   placeholder="Create a password"
                   required
+                  style={{
+                    ...styles.inputField,
+                    ...(isFocused.password ? styles.inputFieldFocused : {}),
+                    ...(errors.password ? styles.inputFieldError : {})
+                  }}
                 />
                 <button
                   type="button"
-                  className="password-toggle"
+                  style={styles.passwordToggle}
                   onClick={() => togglePasswordVisibility('password')}
                   aria-label={showPassword.password ? 'Hide password' : 'Show password'}
                 >
@@ -294,23 +557,35 @@ const SignUp = () => {
                 </button>
               </div>
               {errors.password && (
-                <div className="error-message">
-                  <FiAlertCircle className="error-icon" />
+                <div style={styles.errorMessage}>
+                  <FiAlertCircle style={styles.errorIcon} />
                   <span>{errors.password}</span>
                 </div>
               )}
-              <div className="password-hints">
-                <span className={formData.password.length >= 6 ? 'valid' : ''}>• At least 6 characters</span>
-                <span className={/(?=.*[a-z])/.test(formData.password) ? 'valid' : ''}>• Lowercase letter</span>
-                <span className={/(?=.*[A-Z])/.test(formData.password) ? 'valid' : ''}>• Uppercase letter</span>
-                <span className={/(?=.*\d)/.test(formData.password) ? 'valid' : ''}>• Number</span>
+              <div style={styles.passwordHints}>
+                <span style={{
+                  ...styles.passwordHint,
+                  ...(formData.password.length >= 6 ? styles.passwordHintValid : {})
+                }}>• At least 6 characters</span>
+                <span style={{
+                  ...styles.passwordHint,
+                  ...(/(?=.*[a-z])/.test(formData.password) ? styles.passwordHintValid : {})
+                }}>• Lowercase letter</span>
+                <span style={{
+                  ...styles.passwordHint,
+                  ...(/(?=.*[A-Z])/.test(formData.password) ? styles.passwordHintValid : {})
+                }}>• Uppercase letter</span>
+                <span style={{
+                  ...styles.passwordHint,
+                  ...(/(?=.*\d)/.test(formData.password) ? styles.passwordHintValid : {})
+                }}>• Number</span>
               </div>
             </div>
 
-            <div className={`form-group ${isFocused.confirmPassword ? 'focused' : ''} ${errors.confirmPassword ? 'error' : ''}`}>
-              <label>Confirm Password</label>
-              <div className="input-wrapper">
-                <FiLock className="input-icon" />
+            <div style={styles.formGroup}>
+              <label style={styles.formLabel}>Confirm Password</label>
+              <div style={styles.inputWrapper}>
+                <FiLock style={styles.inputIcon} />
                 <input
                   type={showPassword.confirmPassword ? 'text' : 'password'}
                   name="confirmPassword"
@@ -320,10 +595,15 @@ const SignUp = () => {
                   onBlur={() => handleBlur('confirmPassword')}
                   placeholder="Confirm your password"
                   required
+                  style={{
+                    ...styles.inputField,
+                    ...(isFocused.confirmPassword ? styles.inputFieldFocused : {}),
+                    ...(errors.confirmPassword ? styles.inputFieldError : {})
+                  }}
                 />
                 <button
                   type="button"
-                  className="password-toggle"
+                  style={styles.passwordToggle}
                   onClick={() => togglePasswordVisibility('confirmPassword')}
                   aria-label={showPassword.confirmPassword ? 'Hide password' : 'Show password'}
                 >
@@ -331,29 +611,29 @@ const SignUp = () => {
                 </button>
               </div>
               {errors.confirmPassword && (
-                <div className="error-message">
-                  <FiAlertCircle className="error-icon" />
+                <div style={styles.errorMessage}>
+                  <FiAlertCircle style={styles.errorIcon} />
                   <span>{errors.confirmPassword}</span>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="form-options">
-            <div className="terms-agreement">
+          <div style={styles.formOptions}>
+            <div style={styles.termsAgreement}>
               <input type="checkbox" id="terms" required />
-              <label htmlFor="terms">I agree to the <Link to="/terms">Terms of Service</Link> and <Link to="/privacy">Privacy Policy</Link></label>
+              <label htmlFor="terms">I agree to the <Link to="/terms" style={styles.termsLink}>Terms of Service</Link> and <Link to="/privacy" style={styles.termsLink}>Privacy Policy</Link></label>
             </div>
           </div>
 
-          <button type="submit" className="signup-button">
+          <button type="submit" style={styles.signupButton}>
             Sign Up
           </button>
         </form>
 
-        <div className="signup-footer">
-          <p>
-            Already have an account? <Link to="/login">Sign in</Link>
+        <div style={styles.signupFooter}>
+          <p style={styles.signupFooterP}>
+            Already have an account? <Link to="/login" style={styles.signupFooterA}>Sign in</Link>
           </p>
         </div>
       </div>
