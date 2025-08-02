@@ -1,0 +1,390 @@
+:root {
+  --primary-color: #5b8dea;
+  --primary-light: #7fa8f0;
+  --accent-color: #a2bd39;
+  --accent-hover: #8ca82d;
+  --text-color: #2c3e50;
+  --text-light: #7f8c8d;
+  --border-color: #e0e0e0;
+  --danger-color: #ef4444; /* Red-500 */
+  --danger-hover: #dc2626; /* Red-600 */
+  --bg-light: #f3f4f6; /* Gray-100 */
+  --success-color: #4CAF50;
+}
+
+.vehicle-settings-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header section with white text on primary bg */
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+  background-color: #5b8dea;
+  padding: 2rem;
+  border-radius: 12px;
+}
+
+.header h1,
+.header-title {
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.header p,
+.header-subtitle {
+  color: white;
+  font-size: 1rem;
+}
+
+.header-icon {
+  color: white;
+}
+
+.vehicles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.vehicle-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.vehicle-card.default {
+  border-left: 4px solid var(--accent-color);
+}
+
+.vehicle-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.vehicle-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.vehicle-icon {
+  width: 50px;
+  height: 50px;
+  background-color: var(--bg-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--primary-color);
+}
+
+.vehicle-info h3 {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 1.2rem;
+}
+
+.vehicle-info p {
+  margin: 0.2rem 0 0;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.vehicle-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.8rem;
+}
+
+.default-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-light);
+  border: none;
+  border-radius: 6px;
+  color: var(--text-light);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.default-btn.active {
+  background: var(--accent-color);
+  color: white;
+}
+
+.default-btn:not(.active):hover {
+  background: #e0e0e0;
+}
+
+/* 🔥 Updated Delete (Trash Can) Button */
+.delete-btn {
+  width: 80px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ef4444;
+  border: none;
+  border-radius: 6px;
+  color: var(--danger-color);
+  font-size: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #ef4444;
+  color: white;
+}
+
+.delete-button-icon {
+  font-size: 0.9rem;
+  color: #dc2626;
+}
+
+.delete-button-text {
+  margin-left: 0.25rem;
+  margin-top: 0.20rem;
+  justify-items: center;
+  font-size: 1rem;
+}
+
+.delete-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.delete-btn:hover svg {
+  transform: scale(1.0);
+}
+
+.sensitivity-settings {
+  border-top: 1px solid var(--border-color);
+  padding-top: 1.5rem;
+}
+
+.sensitivity-settings h4 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+  font-size: 1rem;
+}
+
+.sensitivity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.sensitivity-item {
+  margin-bottom: 1rem;
+}
+
+.sensitivity-item label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.sensitivity-options {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.sensitivity-btn {
+  flex: 1;
+  padding: 0.5rem;
+  background: var(--bg-light);
+  border: none;
+  border-radius: 4px;
+  color: var(--text-light);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  transition: all 0.2s ease;
+}
+
+.sensitivity-btn.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.sensitivity-btn:hover:not(.active) {
+  background: #e0e0e0;
+}
+
+.add-vehicle-btn {
+  width: 100%;
+  padding: 1rem;
+  background: white;
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
+  color: var(--primary-color);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-vehicle-btn:hover {
+  border-color: var(--primary-color);
+  background: var(--bg-light);
+}
+
+.add-vehicle-form {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+}
+
+.add-vehicle-form h3 {
+  margin-top: 0;
+  color: var(--text-color);
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  flex: 1;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(91, 141, 234, 0.2);
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text-light);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.save-btn {
+  padding: 0.75rem 1.5rem;
+  background: var(--primary-color);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-btn:hover {
+  background: var(--primary-light);
+}
+
+.cancel-btn {
+  padding: 0.75rem 1.5rem;
+  background: var(--bg-light);
+  border: none;
+  border-radius: 6px;
+  color: var(--text-light);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+  background: #e0e0e0;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .vehicle-header {
+    flex-wrap: wrap;
+  }
+
+  .vehicle-actions {
+    margin-left: 0;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .sensitivity-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.delete-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-light);
+  border: none;
+  border-radius: 6px;
+  color: var(--danger-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #ffe6e6;
+  color: red;
+}
