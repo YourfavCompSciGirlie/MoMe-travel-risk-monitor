@@ -6,8 +6,8 @@ const app = express();
 const PORT = 3001;
 
 // Replace with your actual API key and voice ID
-const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || 'sk_a643c828950177f2fe2d2d0b5ee718479eab034c462ef3a9';
-const VOICE_ID = '21m00Tcm4TlvDq8ikWAM'; // Default voice
+const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || "";
+const VOICE_ID = process.env.VOICE_ID || ''; // Default voice
 
 app.use(cors());
 app.use(express.json());

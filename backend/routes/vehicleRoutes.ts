@@ -2,13 +2,13 @@
 
 import express from 'express';
 import {
-  createVehicle,
-  getUserVehicles,
-  updateVehicle,
-  deleteVehicle,
-} from '../controllers/vehicle.controller';
+  createVehicleController,
+  getVehiclesController,
+  updateVehicleController,
+  deleteVehicleController,
+} from "../controllers/vehicle.controller";
 
-import authMiddleware from '../middlewares/authMiddleware';
+import authMiddleware from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
@@ -16,15 +16,15 @@ const router = express.Router();
 router.use(authMiddleware);
 
 // POST /api/vehicles
-router.post('/', createVehicle);
+router.post("/", createVehicleController);
 
 // GET /api/vehicles
-router.get('/', getUserVehicles);
+router.get("/", getVehiclesController);
 
 // PUT /api/vehicles/:vehicleId
-router.put('/:vehicleId', updateVehicle);
+router.put("/:vehicleId", updateVehicleController);
 
 // DELETE /api/vehicles/:vehicleId
-router.delete('/:vehicleId', deleteVehicle);
+router.delete("/:vehicleId", deleteVehicleController);
 
 export default router;

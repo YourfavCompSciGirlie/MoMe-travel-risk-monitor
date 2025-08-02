@@ -1,5 +1,4 @@
 import { faker } from "@faker-js/faker";
-import "dotenv/config";
 import bcrypt from "bcrypt";
 import { supabase } from "../config/db"; // Use the admin client for seeding
 
