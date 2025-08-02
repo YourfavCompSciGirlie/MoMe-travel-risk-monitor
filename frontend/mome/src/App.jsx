@@ -20,6 +20,9 @@ import Support from "./pages/Help";
 // Landing Page
 import LandingPage from './pages/Landing';
 
+// Chatbot
+import Chatbot from './components/Chatbot';
+
 // Sidebar Component
 import Sidebar from './components/Sidebar';
 
@@ -45,6 +48,7 @@ const ProtectedRoute = () => {
 const App = () => {
   return (
     <Router>
+      <Chatbot />
       <Routes>
         {/* Public Routes */}
         <Route path="/landing" element={<LandingPage />} />

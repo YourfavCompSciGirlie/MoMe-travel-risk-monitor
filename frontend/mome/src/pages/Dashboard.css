@@ -76,6 +76,53 @@ body {
   color: var(--primary-dash);
 }
 
+/* Carousel controls */
+.carousel-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.carousel-button {
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.carousel-button:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* Weather backgrounds */
+.weather-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  opacity: 0.1;
+}
+
+.sunny {
+  background: linear-gradient(to bottom, #ffd700, #ff8c00);
+}
+
+.night {
+  background: linear-gradient(to bottom, #00008b, #191970);
+}
+
+.cloudy {
+  background: linear-gradient(to bottom, #778899, #708090);
+}
+
+
 /* 3 day forcast */
 .weather-main {
   display: flex;
