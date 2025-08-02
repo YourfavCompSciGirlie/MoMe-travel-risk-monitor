@@ -1,11 +1,14 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "dev": "ts-node-dev --respawn server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "db:seed": "ts-node scripts/seed.ts",
+    "db": "ts-node config/db.ts",
+    "test-db": "ts-node test_db.ts"
   },
   "keywords": [],
   "author": "",
@@ -15,10 +18,16 @@
     "express": "^5.1.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.9.0",
     "@supabase/supabase-js": "^2.53.0",
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.3",
     "@types/node": "^24.1.0",
+    "@types/pg": "^8.15.5",
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.2.1",
+    "pg": "^8.16.3",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.2"
   }
