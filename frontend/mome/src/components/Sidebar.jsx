@@ -33,7 +33,7 @@ const Sidebar = () => {
       <div className="sidebar-bottom">
         <button className="sidebar-support">
           <FiHeadphones />
-          Support
+          <NavLink to="/support"> Support</NavLink>
         </button>
         <button className="sidebar-logout" onClick={handleLogout}>
           <FiLogOut />

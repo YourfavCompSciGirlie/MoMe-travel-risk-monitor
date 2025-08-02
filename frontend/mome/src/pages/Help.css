@@ -1,0 +1,258 @@
+.help-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.help-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.help-header h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+}
+
+.help-search {
+  display: flex;
+  margin-bottom: 3rem;
+  gap: 10px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.search-button {
+  padding: 0 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: #2980b9;
+}
+
+.help-section {
+  margin-bottom: 3rem;
+}
+
+.help-section h2 {
+  font-size: 1.8rem;
+  color: #3498db;
+  margin-bottom: 1.5rem;
+}
+
+.faq-list {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.faq-item {
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+.faq-item:hover {
+  background-color: #f8f9fa;
+}
+
+.faq-item.active {
+  background-color: #f1f9fe;
+}
+
+.faq-question {
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.faq-icon {
+  margin-right: 12px;
+  color: #3498db;
+}
+
+.faq-answer {
+  padding: 0 1.5rem 1.5rem 3.5rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.help-card {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.help-card:hover {
+  border-color: #3498db;
+}
+
+.help-card.expanded {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  background-color: white;
+}
+
+.card-header h3 {
+  flex: 1;
+  margin: 0;
+  font-size: 1.2rem;
+  color: #2c3e50;
+}
+
+.card-icon {
+  margin-right: 12px;
+  color: #3498db;
+  font-size: 1.2rem;
+}
+
+.card-content {
+  padding: 0 1.5rem 1.5rem 3.5rem;
+  background-color: #f8f9fa;
+}
+
+.card-content p {
+  margin-top: 0;
+  line-height: 1.6;
+}
+
+.card-content ul {
+  padding-left: 20px;
+}
+
+.card-content li {
+  margin-bottom: 8px;
+}
+
+.voice-examples {
+  margin: 1rem 0;
+}
+
+.example {
+  background: white;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  border-left: 4px solid #3498db;
+}
+
+.command {
+  font-weight: 500;
+  color: #2c3e50;
+  margin: 0 0 5px 0;
+}
+
+.description {
+  color: #7f8c8d;
+  margin: 0;
+}
+
+.voice-tip {
+  font-style: italic;
+  color: #7f8c8d;
+  border-top: 1px dashed #ddd;
+  padding-top: 1rem;
+}
+
+.legal-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.legal-link {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.legal-link:hover {
+  text-decoration: underline;
+}
+
+.additional-help {
+  text-align: center;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.additional-help h2 {
+  margin-bottom: 1rem;
+}
+
+.additional-help p {
+  margin-bottom: 1.5rem;
+  color: #7f8c8d;
+}
+
+.contact-button {
+  padding: 12px 30px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.contact-button:hover {
+  background-color: #2980b9;
+}
+
+@media (max-width: 768px) {
+  .help-container {
+    padding: 1rem;
+  }
+  
+  .help-search {
+    flex-direction: column;
+  }
+  
+  .search-button {
+    padding: 12px;
+  }
+  
+  .legal-links {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

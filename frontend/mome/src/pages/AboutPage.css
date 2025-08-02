@@ -1,0 +1,490 @@
+/* Base Styles */
+.about-page {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section-padding {
+  padding: 80px 0;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #222;
+}
+
+.section-subtitle {
+  font-size: 1.2rem;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 3rem;
+  color: #555;
+}
+
+.highlight {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, #f0f7ff 0%, #e1f0ff 100%);
+  padding: 100px 0;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  align-items: center;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+.brand-accent {
+  color: #2563eb;
+}
+
+.hero-tagline {
+  font-size: 1.3rem;
+  margin-bottom: 2.5rem;
+  color: #444;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 5px;
+}
+
+.hero-image-container {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.hero-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.hero-image:hover {
+  transform: scale(1.02);
+}
+
+/* Problem Section */
+.problem-section {
+  background-color: #fff;
+}
+
+.hazard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin: 50px 0;
+}
+
+.hazard-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hazard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.hazard-icon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.hazard-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+.hazard-description {
+  color: #666;
+}
+
+.problem-statement {
+  background: #f8fafc;
+  border-left: 4px solid #2563eb;
+  padding: 30px;
+  max-width: 800px;
+  margin: 50px auto 0;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+/* Solution Section */
+.solution-section {
+  background-color: #f9fbfd;
+}
+
+.solution-process {
+  max-width: 800px;
+  margin: 0 auto 60px;
+}
+
+.process-step {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 30px;
+  align-items: flex-start;
+}
+
+.step-number {
+  background: #2563eb;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.step-title {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: #222;
+}
+
+.step-description {
+  color: #555;
+}
+
+.solution-demo {
+  max-width: 900px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+}
+
+.demo-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Features Section */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 50px;
+}
+
+.feature-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+  border: 1px solid #e2e8f0;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.highlight-card {
+  border: 2px solid #2563eb;
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.feature-title {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+.feature-description {
+  color: #555;
+}
+
+.feature-badge {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background: #2563eb;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Tech Section */
+.tech-section {
+  background: #fff;
+}
+
+.tech-badges {
+  max-width: 900px;
+  margin: 0 auto 60px;
+}
+
+.tech-badge-group {
+  margin-bottom: 30px;
+}
+
+.tech-group-title {
+  font-size: 1rem;
+  color: #64748b;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.badge-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tech-badge {
+  background: #f1f5f9;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.tech-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+  margin-top: 50px;
+}
+
+.tech-detail-column {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 30px;
+}
+
+.detail-title {
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  color: #222;
+}
+
+.detail-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.detail-list li {
+  margin-bottom: 12px;
+  padding-left: 25px;
+  position: relative;
+  color: #555;
+}
+
+.detail-list li:before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #2563eb;
+  font-weight: bold;
+}
+
+/* Benefits Section */
+.benefits-section {
+  background: linear-gradient(135deg, #f0f7ff 0%, #e1f0ff 100%);
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin: 50px 0;
+}
+
+.benefit-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.benefit-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.benefit-title {
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  color: #222;
+}
+
+.benefit-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.benefit-list li {
+  margin-bottom: 12px;
+  padding-left: 25px;
+  position: relative;
+  color: #555;
+}
+
+.benefit-list li:before {
+  content: "•";
+  position: absolute;
+  left: 10px;
+  color: #2563eb;
+  font-weight: bold;
+}
+
+.testimonial {
+  background: #fff;
+  max-width: 800px;
+  margin: 80px auto 0;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  position: relative;
+}
+
+.testimonial:before {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  font-size: 5rem;
+  color: #e2e8f0;
+  font-family: serif;
+  line-height: 1;
+  z-index: 0;
+}
+
+.testimonial-text {
+  font-size: 1.3rem;
+  font-style: italic;
+  color: #444;
+  position: relative;
+  z-index: 1;
+}
+
+.testimonial-author {
+  margin-top: 20px;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .hero-content {
+    order: 1;
+    text-align: center;
+  }
+  
+  .hero-stats {
+    justify-content: center;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .process-step {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+/* Add these to your existing CSS */
+
+/* React Icons styling */
+.hazard-icon svg,
+.feature-icon svg,
+.benefit-icon svg {
+  color: #2563eb;
+}
+
+/* Tech Stack Section */
+.tech-icons-container {
+  display: flex;
+  justify-content: center;
+  margin: 50px 0;
+}
+
+.tech-icons {
+  max-width: 800px;
+  width: 100%;
+  height: auto;
+}
+
+/* Remove testimonial related CSS if it exists */
+
+/* Solution Section - remove demo image related CSS */
+.solution-demo {
+  display: none;
+}
+
+/* Hero Image Update */
+.hero-image {
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}

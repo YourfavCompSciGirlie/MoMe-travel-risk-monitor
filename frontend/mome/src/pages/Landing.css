@@ -1,0 +1,93 @@
+:root {
+  --bg: #2d3250;
+  --accent: #fbb17a;
+  --text: #ffffff;
+  --alt: #424769;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.landing-wrapper {
+  max-width: 1000px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.landing-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.landing-header h1 {
+  font-size: 2.5rem;
+  color: var(--accent);
+}
+
+.landing-header p {
+  font-size: 1.2rem;
+  color: #ccc;
+}
+
+.landing-btn {
+  display: inline-block;
+  margin-top: 1rem;
+  background: var(--accent);
+  color: var(--bg);
+  padding: 0.75rem 1.5rem;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.landing-btn:hover {
+  background: #e29e5f;
+}
+
+.landing-section {
+  margin-bottom: 3rem;
+}
+
+.landing-section.alt {
+  background: var(--alt);
+  padding: 2rem;
+  border-radius: 12px;
+}
+
+.landing-section h2 {
+  color: var(--accent);
+}
+
+.landing-section ul {
+  list-style: none;
+  padding-left: 1rem;
+}
+
+.landing-section li {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.tech-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.tech-columns div {
+  flex: 1;
+  min-width: 200px;
+}
+
+.landing-footer {
+  text-align: center;
+  padding: 2rem 0;
+  font-size: 0.9rem;
+  color: #aaa;
+  border-top: 1px solid #444;
+}

@@ -15,16 +15,20 @@ import RouteSimulationPage from './pages/RouteSimulationPage';
 import UserProfile from './pages/UserProfile';
 import VehicleSettings from './pages/VehicleSettings';
 import LiveRoute from "./pages/LiveRoute";
+import Support from "./pages/Help";
+
+// Landing Page
+import LandingPage from './pages/Landing';
 
 // Sidebar Component
-import Sidebar from './components/Sidebar'; // adjust path if needed
+import Sidebar from './components/Sidebar';
 
-// Check if user is authenticated
+// Auth Check
 const isAuthenticated = () => {
   return !!localStorage.getItem('token');
 };
 
-// Wraps protected routes with sidebar layout
+// Protected Wrapper
 const ProtectedRoute = () => {
   return isAuthenticated() ? (
     <div style={{ display: 'flex' }}>
@@ -43,14 +47,15 @@ const App = () => {
     <Router>
       <Routes>
         {/* Public Routes */}
+        <Route path="/landing" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        {/* Redirect from root */}
-        <Route path="/" element={<Navigate to={isAuthenticated() ? '/dashboard' : '/login'} />} />
+        {/* Redirect root to landing */}
+        <Route path="/" element={<Navigate to="/landing" />} />
 
-        {/* Protected Routes with Sidebar Layout */}
+        {/* Protected Routes with Sidebar */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/about" element={<AboutPage />} />
@@ -60,9 +65,10 @@ const App = () => {
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/settings" element={<VehicleSettings />} />
           <Route path="/live-route" element={<LiveRoute />} />
+          <Route path="/support" element={<Support />} />
         </Route>
 
-        {/* 404 Fallback */}
+        {/* 404 */}
         <Route
           path="*"
           element={
