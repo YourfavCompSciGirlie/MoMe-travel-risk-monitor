@@ -2,240 +2,16 @@ import React, { useState, useRef, useEffect } from 'react';
 import './Chatbot.css';
 import { FiMessageSquare, FiX, FiMic, FiSend, FiHome, FiInfo, FiAlertCircle, FiMap, FiSettings, FiStar, FiNavigation } from 'react-icons/fi';
 
-// Enhanced conversation flows with more natural responses
-const CONVERSATION_FLOWS = {
-  greetings: [
-    "Hello! I'm your travel assistant. How can I help you today?",
-    "Hi there! I can help with travel alerts, alternative routes, and your loyalty points.",
-    "Welcome back! What travel information do you need?"
-  ],
-  navigation: {
-    'home': { 
-      text: "You're on the home page. What would you like to know about?", 
-      page: 'home',
-      options: [
-        "- Current travel alerts",
-        "- Alternative route options",
-        "- Your loyalty points balance"
-      ]
-    },
-    'alerts': { 
-      text: "Here are the current travel alerts:", 
-      page: 'alerts',
-      action: 'showAlerts'
-    },
-    'routes': { 
-      text: "I can help find alternative routes. Where are you traveling from and to?", 
-      page: 'routes' 
-    },
-    'points': { 
-      text: "Let me check your travel points. One moment...", 
-      page: 'points',
-      action: 'showPointsOptions'
-    },
-    'settings': { 
-      text: "Opening settings for your preferences.", 
-      page: 'settings' 
-    }
-  },
-  alerts: {
-    initial: [
-      "Currently, there are several travel alerts:",
-      "1. Strikes affecting Paris metro (June 5-7)",
-      "2. Typhoon warning in Okinawa (June 10-12)",
-      "3. Road closures in Rome historic center (ongoing)",
-      "",
-      "Would you like details on any of these? (Paris/Okinawa/Rome)"
-    ].join('\n'),
-    details: {
-      'paris': [
-        "Paris Metro Strike Details:",
-        "📅 Dates: June 5-7",
-        "🚇 Affected lines: 4, 6, and 9 from 7am-9pm daily",
-        "",
-        "Recommended alternatives:",
-        "• Use RER trains where possible",
-        "• Consider buses or taxis",
-        "• Walking is best for short distances in central areas",
-        "",
-        "Would you like information about getting around during the strike?"
-      ].join('\n'),
-      'okinawa': [
-        "Okinawa Typhoon Warning:",
-        "🌀 Typhoon Haishen expected June 10-12",
-        "🌧️ Heavy rains and winds up to 120km/h",
-        "",
-        "Travel advice:",
-        "• Airlines may cancel flights - check with your carrier",
-        "• Monitor Japan Meteorological Agency warnings",
-        "• Have contingency plans for your itinerary",
-        "• Consider travel insurance if you haven't already",
-        "",
-        "Would you like help with backup travel arrangements?"
-      ].join('\n'),
-      'rome': [
-        "Rome Road Closures:",
-        "🛣️ Via dei Fori Imperiali closed until August",
-        "🏛️ Due to archaeological work near Colosseum",
-        "",
-        "Impact on travel:",
-        "• No vehicle access to Colosseum area",
-        "• Increased pedestrian zones in historic center",
-        "• Bus routes 51, 85, 87 diverted",
-        "• Allow extra time to reach attractions",
-        "",
-        "Would you like suggestions for alternative sightseeing routes?"
-      ].join('\n')
-    },
-    followUp: {
-      'paris': {
-        'transport': [
-          "Getting around Paris during strikes:",
-          "🚆 RER trains A and B connect major areas",
-          "🚍 Buses 63, 87 good alternatives for central Paris",
-          "🚲 Vélib bike-share available throughout city",
-          "🚕 Taxi apps: G7, Bolt, Uber",
-          "",
-          "Walking times between central landmarks:",
-          "• Louvre to Notre-Dame: 15min",
-          "• Eiffel Tower to Arc de Triomphe: 25min"
-        ].join('\n')
-      },
-      'okinawa': {
-        'backup': [
-          "Okinawa Backup Options:",
-          "✈️ If flights cancelled:",
-          " - Next available flights typically 1-2 days later",
-          " - Consider ferry to mainland (takes ~24hrs)",
-          "",
-          "🏨 Accommodation tips:",
-          " - Many hotels offer storm rate extensions",
-          " - Naha has most availability during storms",
-          "",
-          "ℹ️ Emergency contacts:",
-          " - Okinawa Tourist Info: +81 98-866-2222",
-          " - Your embassy contacts are in your profile"
-        ].join('\n')
-      },
-      'rome': {
-        'sightseeing': [
-          "Alternative Rome Sightseeing:",
-          "🏟️ Colosseum access:",
-          " - Enter from Via di San Gregorio side",
-          " - Consider underground tour (less crowded)",
-          "",
-          "🚶‍♂️ Walking routes:",
-          "1. Pantheon → Piazza Navona → Campo de' Fiori",
-          "2. Trevi Fountain → Spanish Steps → Villa Borghese",
-          "",
-          "🚍 Bus alternatives:",
-          " - Route 118 serves Trastevere area",
-          " - Route 23 connects Vatican to Testaccio"
-        ].join('\n')
-      }
-    }
-  },
-  points: {
-    initial: [
-      "You currently have 4,850 travel points. Here's what you can do:",
-      "1. Check detailed point balance",
-      "2. See redemption options",
-      "3. Learn how to earn more points",
-      "",
-      "What would you like to know about your points?"
-    ].join('\n'),
-    details: {
-      'balance': [
-        "Your Points Breakdown:",
-        "✈️ Flights: 2,150 pts",
-        "🏨 Hotels: 1,700 pts",
-        "🚗 Ground transport: 1,000 pts",
-        "",
-        "⏳ Your points expire December 15, 2023",
-        "🎯 You're 150 pts away from a flight upgrade!",
-        "",
-        "Would you like suggestions to earn those last points?"
-      ].join('\n'),
-      'redeem': [
-        "Redemption Options:",
-        "1. Flight upgrade (5,000 pts)",
-        "   - Business class on short-haul flights",
-        "   - Premium economy on long-haul",
-        "",
-        "2. Hotel night (8,000 pts)",
-        "   - Category 1-3 properties worldwide",
-        "   - 50% discount on higher categories",
-        "",
-        "3. $50 travel credit (2,500 pts)",
-        "   - Applicable to any booking",
-        "",
-        "Would you like to redeem points now?"
-      ].join('\n'),
-      'earn': [
-        "Ways to Earn More Points:",
-        "🔥 Current Promotions:",
-        "• Double points on all June bookings",
-        "• 500 bonus pts for weekend flights",
-        "",
-        "💳 Regular Earning:",
-        "1. Book hotels through our portal (3x pts)",
-        "2. Weekend flights bonus (500 pts)",
-        "3. Refer friends (1,000 pts each)",
-        "",
-        "Quickest way to earn 150+ pts:",
-        "• Book any hotel stay (avg. 200-300 pts)",
-        "• Take a weekend flight (500 pts bonus)"
-      ].join('\n')
-    }
-  },
-  general: {
-    'help': [
-      "I can help with:",
-      "• Travel alerts and warnings",
-      "• Finding alternative routes",
-      "• Checking your loyalty points",
-      "• Weather and security information",
-      "",
-      "Try saying:",
-      "- 'Show me travel alerts'",
-      "- 'Find alternative routes to Paris'",
-      "- 'How many points do I have?'",
-      "",
-      "Or just say 'Hey Memo' anytime I can help!"
-    ].join('\n'),
-    'thanks': [
-      "You're very welcome!",
-      "",
-      "Remember, I'm here 24/7 to help with:",
-      "• Last-minute travel changes",
-      "• Emergency assistance",
-      "• Destination information",
-      "",
-      "Safe travels and don't hesitate to ask if you need anything else!"
-    ].join('\n'),
-    'emergency': [
-      "For emergencies:",
-      "1. Local emergency number: 112 (EU) or 911 (US)",
-      "2. Your embassy contacts are saved in your profile",
-      "3. I can connect you to our 24/7 support line",
-      "",
-      "⚠️ If this is a life-threatening emergency, please contact local authorities immediately."
-    ].join('\n')
-  }
-};
-
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { text: CONVERSATION_FLOWS.greetings[0], sender: 'AI', voice: true }
+    { text: "Hello! I'm your travel assistant. How can I help you today?", sender: 'AI', voice: true }
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [continuousListening, setContinuousListening] = useState(true);
   const [currentPage, setCurrentPage] = useState('home');
-  const [currentFlow, setCurrentFlow] = useState(null);
-  const [flowContext, setFlowContext] = useState({});
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
   const synthRef = useRef(window.speechSynthesis);
@@ -329,11 +105,38 @@ const Chatbot = () => {
     utterance.volume = 1;
     synthRef.current.speak(utterance);
   };
+   
+  const playTextToSpeech = async (text) => {
+    try {
+      const response = await fetch('http://localhost:3001/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+  
+      if (!response.ok) {
+        const error = await response.json();
+        console.error('TTS error:', error);
+        return;
+      }
+  
+      const data = await response.json();
+      const audioSrc = data.audio;
+  
+      const audio = new Audio(audioSrc);
+      audio.play();
+  
+    } catch (err) {
+      console.error('Error calling TTS backend:', err);
+    }
+  };
+
+
 
   const addSystemMessage = (text, voice = false) => {
     setMessages(prev => [...prev, { text, sender: 'AI', voice }]);
     if (voice) {
-      speakResponse(text);
+     // speakResponse(text);
     }
   };
 
@@ -362,92 +165,16 @@ const Chatbot = () => {
 
   const handleNavigation = (command) => {
     const lowerCommand = command.toLowerCase();
-    for (const [key, value] of Object.entries(CONVERSATION_FLOWS.navigation)) {
-      if (lowerCommand.includes(key)) {
-        setCurrentPage(value.page);
-        addSystemMessage(value.text, true);
-        
-        // Handle specific navigation actions
-        if (value.action === 'showAlerts') {
-          setCurrentFlow('alerts');
-          addSystemMessage(CONVERSATION_FLOWS.alerts.initial, true);
-        } else if (value.action === 'showPointsOptions') {
-          setCurrentFlow('points');
-          addSystemMessage(CONVERSATION_FLOWS.points.initial, true);
-        }
-        
+    const pages = ['home', 'alerts', 'routes', 'points', 'settings'];
+    
+    for (const page of pages) {
+      if (lowerCommand.includes(page)) {
+        setCurrentPage(page);
+        addSystemMessage(`Navigated to ${page} page. How can I help you with ${page}?`, true);
         return true;
       }
     }
     return false;
-  };
-
-  const handleAlertsFlow = (message) => {
-    const lowerMessage = message.toLowerCase();
-    
-    // Check for alert selection
-    for (const [alert, details] of Object.entries(CONVERSATION_FLOWS.alerts.details)) {
-      if (lowerMessage.includes(alert)) {
-        addSystemMessage(details, true);
-        setFlowContext({ currentAlert: alert });
-        return true;
-      }
-    }
-    
-    // Check for follow-up questions
-    if (flowContext.currentAlert) {
-      const alertFollowUps = CONVERSATION_FLOWS.alerts.followUp[flowContext.currentAlert] || {};
-      for (const [keyword, response] of Object.entries(alertFollowUps)) {
-        if (lowerMessage.includes(keyword)) {
-          addSystemMessage(response, true);
-          return true;
-        }
-      }
-    }
-    
-    // Check for general responses
-    for (const [keyword, response] of Object.entries(CONVERSATION_FLOWS.general)) {
-      if (lowerMessage.includes(keyword)) {
-        addSystemMessage(response, true);
-        return true;
-      }
-    }
-    
-    // Default response
-    if (lowerMessage.includes('yes') || lowerMessage.includes('more')) {
-      const currentAlert = flowContext.currentAlert || '';
-      const prompt = CONVERSATION_FLOWS.alerts.details[currentAlert] 
-        ? `What would you like to know about the ${currentAlert} alert?` 
-        : "I can provide details on Paris, Okinawa, or Rome alerts. Which would you like?";
-      addSystemMessage(prompt, true);
-      return true;
-    }
-    
-    return false;
-  };
-
-  const handlePointsFlow = (message) => {
-    const lowerMessage = message.toLowerCase();
-    
-    // Check for points options
-    for (const [option, details] of Object.entries(CONVERSATION_FLOWS.points.details)) {
-      if (lowerMessage.includes(option)) {
-        addSystemMessage(details, true);
-        return true;
-      }
-    }
-    
-    // Check for general responses
-    for (const [keyword, response] of Object.entries(CONVERSATION_FLOWS.general)) {
-      if (lowerMessage.includes(keyword)) {
-        addSystemMessage(response, true);
-        return true;
-      }
-    }
-    
-    // Default response
-    addSystemMessage(CONVERSATION_FLOWS.points.initial, true);
-    return true;
   };
 
   const handleSend = async (customInput) => {
@@ -458,47 +185,36 @@ const Chatbot = () => {
     setInput('');
     setIsTyping(true);
 
-    await new Promise(resolve => setTimeout(resolve, 500));
-
     try {
       // First try navigation commands
       const isNavigation = handleNavigation(message);
       
-      // Then handle conversation flows
       if (!isNavigation) {
-        let isHandled = false;
-        
-        if (currentFlow === 'alerts') {
-          isHandled = handleAlertsFlow(message);
-        } else if (currentFlow === 'points') {
-          isHandled = handlePointsFlow(message);
+        // Call your AI endpoint
+        const response = await fetch('http://localhost:5000/api/voices/ask'
+          , {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            prompt: message,
+            context: currentPage
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to get response from AI');
         }
-        
-        // Check general responses if not handled by flow
-        if (!isHandled) {
-          for (const [keyword, response] of Object.entries(CONVERSATION_FLOWS.general)) {
-            if (message.toLowerCase().includes(keyword)) {
-              addSystemMessage(response, true);
-              isHandled = true;
-              break;
-            }
-          }
-        }
-        
-        // Final fallback
-        if (!isHandled) {
-          const response = currentFlow === 'alerts' 
-            ? "I can provide details on Paris, Okinawa, or Rome alerts. Which would you like?"
-            : currentFlow === 'points'
-            ? "Would you like to check your balance, redemption options, or ways to earn more points?"
-            : `I can help with ${currentPage} information. Try asking about:\n- Travel alerts\n- Alternative routes\n- Your points balance`;
-          
-          addSystemMessage(response, true);
-        }
+
+        const data = await response.json();
+        addSystemMessage(data.text, true);
+        playTextToSpeech(data.text);
+      
       }
     } catch (error) {
-      addSystemMessage("Sorry, I'm having trouble processing that request.", true);
-      console.error('Chatbot error:', error);
+      console.error('Error calling AI endpoint:', error);
+      addSystemMessage("Sorry, I'm having trouble processing your request. Please try again later.", true);
     } finally {
       setIsTyping(false);
     }
@@ -551,14 +267,7 @@ const Chatbot = () => {
                 className={currentPage === button.id ? 'active' : ''}
                 onClick={() => {
                   setCurrentPage(button.id);
-                  const navItem = CONVERSATION_FLOWS.navigation[button.id];
-                  addSystemMessage(navItem.text, true);
-                  setCurrentFlow(button.id);
-                  if (button.id === 'alerts') {
-                    addSystemMessage(CONVERSATION_FLOWS.alerts.initial, true);
-                  } else if (button.id === 'points') {
-                    addSystemMessage(CONVERSATION_FLOWS.points.initial, true);
-                  }
+                  addSystemMessage(`Now on ${button.label} page. How can I help you with ${button.label.toLowerCase()}?`, true);
                 }}
                 title={button.label}
               >
