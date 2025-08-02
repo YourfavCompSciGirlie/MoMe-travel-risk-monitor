@@ -4,7 +4,7 @@ import * as userService from '../services/user.service';
 
 export const getUserProfile = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.params;
+    const userId = (req as any).user?.id;
     if (!userId) {
       return res.status(400).json({ error: 'User ID is required.' });
     }
