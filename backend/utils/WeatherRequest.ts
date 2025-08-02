@@ -59,12 +59,7 @@ export async function getWeatherByCity(
 
     return responseData;
 
-    // console.log(`Weather in ${data.name}:`);
-    // console.log(`Temperature: ${data.main.temp}°C`);
-    // console.log(`Feels like: ${data.main.feels_like}°C`);
-    // console.log(`Weather: ${data.weather[0].description}`);
-    // console.log(`Humidity: ${data.main.humidity}%`);
-    // console.log(`Wind Speed: ${data.wind.speed} m/s`);
+ 
   } catch (error: any) {
     // Handle potential errors, such as a city not being found or network issues
     if (axios.isAxiosError(error) && error.response) {

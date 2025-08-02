@@ -1,15 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FiMapPin, FiWind, FiDroplet, FiFilter, FiChevronDown,
   FiChevronLeft, FiChevronRight, FiNavigation
 } from 'react-icons/fi';
 import './Dashboard.css';
 
+const CITIES = [
+  { name: 'Centurion', country: 'ZA' },
+  { name: 'Johannesburg', country: 'ZA' },
+  { name: 'Cape Town', country: 'ZA' },
+  { name: 'Durban', country: 'ZA' },
+  { name: 'Pretoria', country: 'ZA' },
+  { name: 'London', country: 'UK' },
+  { name: 'New York', country: 'US' }
+];
+
+const defaultWeather = {
+  name: 'Centurion',
+  main: {
+    temp: 8,
+    feels_like: 5,
+    temp_max: 20,
+    temp_min: 6,
+    humidity: 65
+  },
+  weather: [{
+    description: 'Partly cloudy conditions expected...'
+  }],
+  wind: {
+    speed: 4.72
+  }
+};
+
 function Dashboard() {
+  const [selectedCity, setSelectedCity] = useState(CITIES[0]);
+  const [showCityDropdown, setShowCityDropdown] = useState(false);
   const [voiceMode, setVoiceMode] = useState(false);
   const [isSimulating, setIsSimulating] = useState(false);
   const [alertFilter, setAlertFilter] = useState('all');
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [loadingWeather, setLoadingWeather] = useState(false);
+  const [weatherData, setWeatherData] = useState(defaultWeather);
+  const [progress, setProgress] = useState(0);
+  const [apiError, setApiError] = useState(null);
 
   const toggleVoiceMode = () => {
     setVoiceMode(!voiceMode);
@@ -17,31 +50,19 @@ function Dashboard() {
 
   const simulateRoute = () => {
     setIsSimulating(true);
-    setTimeout(() => setIsSimulating(false), 2000);
+    setProgress(0);
+
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setIsSimulating(false);
+          return 0;
+        }
+        return prev + 10;
+      });
+    }, 300);
   };
-
-  // simulation for the routes
-  const RouteSimulation = () => {
-    const [isSimulating, setIsSimulating] = useState(false);
-    const [progress, setProgress] = useState(0);
-
-    const simulateRoute = () => {
-      setIsSimulating(true);
-      setProgress(0);
-
-      // Mock simulation progress
-      const interval = setInterval(() => {
-        setProgress(prev => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            setIsSimulating(false);
-            return 0;
-          }
-          return prev + 10;
-        });
-      }, 300)
-    }
-  }
 
   const filteredAlerts = [
     {
@@ -98,6 +119,55 @@ function Dashboard() {
     return { level: 'Low', color: 'var(--accent-green)', bg: 'rgba(162, 189, 57, 0.1)' };
   };
 
+  const fetchWeatherData = async (city) => {
+    setLoadingWeather(true);
+    setApiError(null);
+    try {
+      // Simulate API call with timeout
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // For demo purposes, modify default data based on city
+      const tempVariation = Math.random() * 6 - 3; // Random temp variation -3 to +3
+      const newWeatherData = {
+        ...defaultWeather,
+        name: city.name,
+        main: {
+          ...defaultWeather.main,
+          temp: defaultWeather.main.temp + tempVariation,
+          feels_like: defaultWeather.main.feels_like + tempVariation,
+          temp_max: defaultWeather.main.temp_max + tempVariation,
+          temp_min: defaultWeather.main.temp_min + tempVariation
+        },
+        weather: [{
+          description: `Weather for ${city.name} (demo)`
+        }]
+      };
+      setWeatherData(newWeatherData);
+      
+      // In a real app, use this:
+      // const response = await fetch(
+      //   `https://api.openweathermap.org/data/2.5/weather?q=${city.name},${city.country}&units=metric&appid=YOUR_API_KEY`
+      // );
+      // const data = await response.json();
+      // setWeatherData(data);
+    } catch (error) {
+      console.error('Error fetching weather:', error);
+      setApiError('Failed to load weather data');
+    } finally {
+      setLoadingWeather(false);
+    }
+  };
+
+  const handleCityChange = (city) => {
+    setSelectedCity(city);
+    setShowCityDropdown(false);
+    fetchWeatherData(city);
+  };
+
+  useEffect(() => {
+    fetchWeatherData(selectedCity);
+  }, []);
+
   const currentRisk = riskLevel(72);
 
   return (
@@ -111,67 +181,78 @@ function Dashboard() {
             <div className="weather-header">
               <div className="location">
                 <FiMapPin className="location-icon" />
-                <div>
-                  <p className="location-label">MY LOCATION</p>
-                  <h2 className="location-name">Centurion</h2>
+                <div className="city-selector">
+                  <div>
+                    <p className="location-label">MY LOCATION</p>
+                    <div 
+                      className="city-dropdown-toggle"
+                      onClick={() => setShowCityDropdown(!showCityDropdown)}
+                    >
+                      <h2 className="location-name">{selectedCity.name}</h2>
+                      <FiChevronDown className={`dropdown-icon ${showCityDropdown ? 'open' : ''}`} />
+                    </div>
+                  </div>
+                  {showCityDropdown && (
+                    <div className="city-dropdown-menu">
+                      {CITIES.map(city => (
+                        <div
+                          key={`${city.name}-${city.country}`}
+                          className={`city-option ${selectedCity.name === city.name ? 'selected' : ''}`}
+                          onClick={() => handleCityChange(city)}
+                        >
+                          {city.name}, {city.country}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
+              <button
+                className="refresh-weather"
+                onClick={() => fetchWeatherData(selectedCity)}
+                disabled={loadingWeather}
+              >
+                {loadingWeather ? 'Refreshing...' : 'Refresh'}
+              </button>
             </div>
 
-            <div className="weather-main">
-              <div className="temperature-main">
-                <span className="temp-value">8°</span>
-                <span className="temp-feels">Feels Like: 5°</span>
-                <span className="temp-range">High: 20° Low: 6°</span>
-              </div>
-
-              <div className="weather-details">
-                <p className="weather-description">
-                  Partly cloudy conditions expected around 08:00. Wind gusts up to 17 km/h are making the temperature feel like 5°.
-                </p>
-
-                <div className="weather-stats">
-                  <div className="stat-item">
-                    <FiWind className="stat-icon" />
-                    <span>17 km/h</span>
-                  </div>
-                  <div className="stat-item">
-                    <FiDroplet className="stat-icon" />
-                    <span>65%</span>
-                  </div>
+            {apiError ? (
+              <div className="weather-error">{apiError} (using sample data)</div>
+            ) : loadingWeather ? (
+              <div className="weather-loading">Loading weather data...</div>
+            ) : (
+              <div className="weather-main">
+                <div className="temperature-main">
+                  <span className="temp-value">
+                    {Math.round(weatherData.main.temp)}°
+                  </span>
+                  <span className="temp-feels">
+                    Feels Like: {Math.round(weatherData.main.feels_like)}°
+                  </span>
+                  <span className="temp-range">
+                    High: {Math.round(weatherData.main.temp_max)}°
+                    Low: {Math.round(weatherData.main.temp_min)}°
+                  </span>
                 </div>
 
-                <div className="hourly-forecast">
-                  <div className="hourly-header">
-                    <span>Now</span>
-                    <span>00</span>
-                    <span>01</span>
-                    <span>02</span>
-                    <span>03</span>
-                    <span>04</span>
-                    <span>05</span>
-                  </div>
-                  <div className="hourly-icons">
-                    <span>☀️</span>
-                    <span>🌤️</span>
-                    <span>🌤️</span>
-                    <span>🌙</span>
-                    <span>🌙</span>
-                    <span>🌙</span>
-                    <span>🌙</span>
-                  </div>
-                  <div className="hourly-temps">
-                    <span>8°</span>
-                    <span>8°</span>
-                    <span>7°</span>
-                    <span>6°</span>
-                    <span>5°</span>
-                    <span>4°</span>
-                    <span>4°</span>
+                <div className="weather-details">
+                  <p className="weather-description">
+                    {weatherData.weather[0].description}
+                  </p>
+
+                  <div className="weather-stats">
+                    <div className="stat-item">
+                      <FiWind className="stat-icon" />
+                      <span>{Math.round(weatherData.wind.speed * 3.6)} km/h</span>
+                    </div>
+                    <div className="stat-item">
+                      <FiDroplet className="stat-icon" />
+                      <span>{weatherData.main.humidity}%</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
@@ -278,7 +359,7 @@ function Dashboard() {
                     className="factor-progress"
                     style={{
                       width: '25%',
-                      backgroundColor: 'var(--accent-green)' // Matches first segment
+                      backgroundColor: 'var(--accent-green)'
                     }}
                   ></div>
                 </div>
@@ -290,7 +371,7 @@ function Dashboard() {
                     className="factor-progress"
                     style={{
                       width: '50%',
-                      backgroundColor: 'var(--warning)' // Matches middle segment
+                      backgroundColor: 'var(--warning)'
                     }}
                   ></div>
                 </div>
@@ -302,7 +383,7 @@ function Dashboard() {
                     className="factor-progress"
                     style={{
                       width: '25%',
-                      backgroundColor: 'var(--error)' // Matches last segment
+                      backgroundColor: 'var(--error)'
                     }}
                   ></div>
                 </div>
@@ -318,7 +399,6 @@ function Dashboard() {
             </div>
 
             <div className="trend-chart">
-              {/* X-axis labels */}
               <div className="chart-labels-x">
                 <span>Mon</span>
                 <span>Tue</span>
@@ -327,7 +407,6 @@ function Dashboard() {
                 <span>Fri</span>
               </div>
 
-              {/* Y-axis labels */}
               <div className="chart-labels-y">
                 <span>100</span>
                 <span>75</span>
@@ -336,10 +415,8 @@ function Dashboard() {
                 <span>0</span>
               </div>
 
-              {/* Chart grid and line */}
               <div className="chart-grid">
                 <div className="chart-line">
-                  {/* Data points with visual connectors */}
                   <div className="data-point" style={{ left: '10%', bottom: '30%' }}>
                     <div className="point-value">68</div>
                     <div className="point-connector"></div>

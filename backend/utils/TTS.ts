@@ -1,14 +1,13 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import fetch from 'node-fetch'; // Use global `fetch` if on Node 18+
+import fetch from 'node-fetch'; // Remove this if using Node 18+
 
 const app = express();
 const PORT = 3001;
 
-// Replace with your actual API key and voice ID
-const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || "";
-const VOICE_ID = process.env.VOICE_ID || ''; // Default voice
-
+// Hardcoded API credentials — replace these with your actual values
+const ELEVENLABS_API_KEY = "sk_5157ef5203dcfe1c5037f3530bb1f28a1c635d9e40a44f59"; // Example: "e38c4cd2bd3f..."
+const VOICE_ID = "pNInz6obpgDQGcFmaJgB";
 app.use(cors());
 app.use(express.json());
 
@@ -56,5 +55,5 @@ app.post('/tts', async (req: Request<{}, {}, TTSRequest>, res: Response) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`TTS backend listening on port ${PORT}`);
+  console.log(`✅ TTS backend is running at http://localhost:${PORT}`);
 });
