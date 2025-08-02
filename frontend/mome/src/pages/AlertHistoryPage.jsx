@@ -38,38 +38,52 @@ const AlertsHistory = () => {
     {
       id: 1,
       type: 'hail',
-      message: 'Severe hail warning in your area',
-      timestamp: '2023-06-15T14:30:00',
-      location: 'Downtown District',
-      coordinates: { lat: 40.7128, lng: -74.0060 },
-      severity: 'high'
+      message: 'Severe hail warning in Johannesburg',
+      timestamp: '2023-11-15T14:30:00',
+      location: 'Sandton, Gauteng',
+      coordinates: { lat: -26.1076, lng: 28.0567 },
+      severity: 'high',
+      description: 'Large hailstones expected with possible damage to vehicles and property.'
     },
     {
       id: 2,
       type: 'rain',
-      message: 'Heavy rainfall expected tonight',
-      timestamp: '2023-06-14T18:45:00',
-      location: 'North Suburbs',
-      coordinates: { lat: 40.8128, lng: -74.1060 },
-      severity: 'medium'
+      message: 'Heavy rainfall expected in Cape Town',
+      timestamp: '2023-11-14T18:45:00',
+      location: 'City Bowl, Western Cape',
+      coordinates: { lat: -33.9249, lng: 18.4241 },
+      severity: 'medium',
+      description: 'Persistent rainfall may cause localized flooding in low-lying areas.'
     },
     {
       id: 3,
       type: 'wind',
-      message: 'Strong winds detected nearby',
-      timestamp: '2023-06-12T09:15:00',
-      location: 'Eastside Neighborhood',
-      coordinates: { lat: 40.7128, lng: -73.9060 },
-      severity: 'medium'
+      message: 'Strong winds detected in Durban',
+      timestamp: '2023-11-12T09:15:00',
+      location: 'Umhlanga, KwaZulu-Natal',
+      coordinates: { lat: -29.7167, lng: 31.0667 },
+      severity: 'medium',
+      description: 'Gale force winds may cause disruption to coastal activities.'
     },
     {
       id: 4,
       type: 'flood',
-      message: 'Potential flooding in low-lying areas',
-      timestamp: '2023-06-10T22:00:00',
-      location: 'Riverside',
-      coordinates: { lat: 40.6128, lng: -74.0060 },
-      severity: 'high'
+      message: 'Flood warning for Limpopo Valley',
+      timestamp: '2023-11-10T22:00:00',
+      location: 'Polokwane, Limpopo',
+      coordinates: { lat: -23.8965, lng: 29.4486 },
+      severity: 'high',
+      description: 'River levels rising rapidly after heavy upstream rainfall.'
+    },
+    {
+      id: 5,
+      type: 'fire',
+      message: 'Wildfire risk in Western Cape',
+      timestamp: '2023-11-08T11:20:00',
+      location: 'Stellenbosch, Western Cape',
+      coordinates: { lat: -33.9321, lng: 18.8602 },
+      severity: 'high',
+      description: 'Extreme fire danger due to high temperatures and strong winds.'
     },
   ];
 
@@ -79,6 +93,7 @@ const AlertsHistory = () => {
     { id: 'rain', name: 'Rain' },
     { id: 'wind', name: 'Wind' },
     { id: 'flood', name: 'Flood' },
+    { id: 'fire', name: 'Fire' },
   ];
 
   const filteredAlerts = filter === 'all' 
@@ -94,9 +109,10 @@ const AlertsHistory = () => {
       month: 'short', 
       day: 'numeric',
       hour: '2-digit', 
-      minute: '2-digit' 
+      minute: '2-digit',
+      timeZone: 'Africa/Johannesburg'
     };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    return new Date(dateString).toLocaleDateString('en-ZA', options);
   };
 
   const getAlertIcon = (type) => {
@@ -104,7 +120,7 @@ const AlertsHistory = () => {
   };
 
   const getSeverityColor = (severity) => {
-    return severity === 'high' ? 'var(--danger-color)' : 'var(--primary-light)';
+    return severity === 'high' ? '#dc2626' : '#2563eb';
   };
 
   const getMarkerColor = (severity) => {
@@ -122,18 +138,40 @@ const AlertsHistory = () => {
     });
   };
 
+  const handleShare = async (alert) => {
+    try {
+      const shareData = {
+        title: `Weather Alert: ${alert.type.toUpperCase()}`,
+        text: `${alert.message} in ${alert.location}`,
+        url: `https://maps.google.com/?q=${alert.coordinates.lat},${alert.coordinates.lng}`
+      };
+      
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback for browsers that don't support Web Share API
+        navigator.clipboard.writeText(`${shareData.text} - ${shareData.url}`);
+        alert('Alert details copied to clipboard');
+      }
+    } catch (err) {
+      console.error('Error sharing:', err);
+    }
+  };
+
   return (
     <div className="alerts-container">
       <div className="alerts-card">
         <div className="alerts-header">
-          <h1>Alert History</h1>
-          <p className="subtitle">Review past weather notifications</p>
+          <h1>South African Weather Alerts</h1>
+          <p className="subtitle">Recent weather warnings and advisories</p>
         </div>
 
         <div className="filters-section">
           <button 
             className="filter-toggle"
             onClick={() => setShowFilters(!showFilters)}
+            aria-expanded={showFilters}
+            aria-label="Filter alerts"
           >
             <FiFilter className="filter-icon" />
             {alertTypes.find(t => t.id === filter)?.name || 'Filter'}
@@ -150,6 +188,7 @@ const AlertsHistory = () => {
                     setFilter(type.id);
                     setShowFilters(false);
                   }}
+                  aria-label={`Filter by ${type.name}`}
                 >
                   {type.name}
                 </button>
@@ -161,17 +200,17 @@ const AlertsHistory = () => {
         <div className="alerts-list">
           {filteredAlerts.length === 0 ? (
             <div className="no-alerts">
-              <p>No alerts match your current filter</p>
+              <p>No weather alerts for your selected filter</p>
             </div>
           ) : (
             filteredAlerts.map(alert => (
               <div 
                 key={alert.id} 
                 className={`alert-item ${alert.severity} ${expandedAlert === alert.id ? 'expanded' : ''}`}
-                onClick={() => {
-                  toggleExpand(alert.id);
-                  setSelectedAlert(alert);
-                }}
+                onClick={() => toggleExpand(alert.id)}
+                role="button"
+                tabIndex={0}
+                aria-expanded={expandedAlert === alert.id}
               >
                 <div className="alert-summary">
                   {getAlertIcon(alert.type)}
@@ -196,7 +235,7 @@ const AlertsHistory = () => {
                     <div className="map-snippet">
                       <MapContainer
                         center={[alert.coordinates.lat, alert.coordinates.lng]}
-                        zoom={12}
+                        zoom={11}
                         scrollWheelZoom={false}
                         style={{ height: '200px', width: '100%', borderRadius: '8px' }}
                       >
@@ -219,10 +258,18 @@ const AlertsHistory = () => {
                           e.stopPropagation();
                           setSelectedAlert(alert);
                         }}
+                        aria-label="View alert details"
                       >
                         <FiInfo size={16} /> Details
                       </button>
-                      <button className="share-button">
+                      <button 
+                        className="share-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleShare(alert);
+                        }}
+                        aria-label="Share alert"
+                      >
                         <FiShare2 size={16} /> Share
                       </button>
                     </div>
@@ -235,11 +282,12 @@ const AlertsHistory = () => {
       </div>
 
       {selectedAlert && (
-        <div className="modal-overlay">
-          <div className="modal-content">
+        <div className="modal-overlay" onClick={() => setSelectedAlert(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <button 
               className="modal-close"
               onClick={() => setSelectedAlert(null)}
+              aria-label="Close modal"
             >
               <FiX />
             </button>
@@ -254,14 +302,15 @@ const AlertsHistory = () => {
             <h2>{selectedAlert.message}</h2>
             <div className="badge-description">
               <p><strong>Location:</strong> {selectedAlert.location}</p>
-              <p><strong>Time:</strong> {formatDate(selectedAlert.timestamp)}</p>
+              <p><strong>Time:</strong> {formatDate(selectedAlert.timestamp)} SAST</p>
               <p><strong>Coordinates:</strong> {selectedAlert.coordinates.lat.toFixed(4)}, {selectedAlert.coordinates.lng.toFixed(4)}</p>
+              <p><strong>Details:</strong> {selectedAlert.description}</p>
             </div>
             
             <div className="modal-map">
               <MapContainer
                 center={[selectedAlert.coordinates.lat, selectedAlert.coordinates.lng]}
-                zoom={12}
+                zoom={11}
                 scrollWheelZoom={true}
                 style={{ height: '300px', width: '100%', borderRadius: '8px' }}
               >
@@ -280,15 +329,16 @@ const AlertsHistory = () => {
             
             <div className={`alert-info ${selectedAlert.severity}`}>
               {selectedAlert.severity === 'high' ? (
-                <span>High Severity Alert</span>
+                <span>⚠️ High Severity Alert - Take immediate precautions</span>
               ) : (
-                <span>Medium Severity Alert</span>
+                <span>ℹ️ Medium Severity Alert - Stay informed</span>
               )}
             </div>
             
             <button 
               className="modal-close-btn"
               onClick={() => setSelectedAlert(null)}
+              aria-label="Close modal"
             >
               Close
             </button>
