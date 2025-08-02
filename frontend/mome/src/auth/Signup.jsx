@@ -40,6 +40,7 @@ const SignUp = () => {
     password: false,
     confirmPassword: false
   });
+  const [message, setMessage] = useState('');
 
   const validateForm = () => {
     let valid = true;
@@ -138,12 +139,41 @@ const SignUp = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      // Simulate signup
-      localStorage.setItem('token', 'dummy_token');
-      navigate('/dashboard');
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          surname: formData.surname,
+          phone_number: formData.phone,
+          email: formData.email,
+          password: formData.password
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setMessage(`Registration failed: ${result.message || result.error}`);
+      } else {
+        setMessage('Registration successful! Redirecting...');
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('Network or server error:', err);
+      setMessage('Server error. Please try again later.');
     }
   };
 
@@ -375,6 +405,12 @@ const SignUp = () => {
       color: 'white',
       textDecoration: 'none',
       fontWeight: 500
+    },
+    message: {
+      textAlign: 'center',
+      margin: '10px 0',
+      color: '#FFFFFF',
+      fontSize: '14px'
     }
   };
 
@@ -409,6 +445,8 @@ const SignUp = () => {
           <h2 style={styles.signupHeaderH2}>Create an Account</h2>
           <p style={styles.signupHeaderP}>Join us today!</p>
         </div>
+
+        {message && <div style={styles.message}>{message}</div>}
 
         <form onSubmit={handleSubmit} style={styles.signupForm} noValidate>
           <div style={styles.formRow}>
