@@ -5,9 +5,9 @@ import { AlertStatus, AlertType, GeoJSONPoint } from "./shared";
  * Represents a record in the 'alerts' table
  */
 export interface Alert {
-  id: number;
-  user_id: number;
-  trip_id?: number | null;
+  id: string;
+  user_id: string;
+  trip_id?: string | null;
   type: AlertType;
   status: AlertStatus;
   content?: AlertContent;

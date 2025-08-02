@@ -1,43 +1,44 @@
 import { Request, Response } from 'express';
 import * as alertService from '../services/alert.service';
-import { AlertType, GeoJSONPoint } from "../types/shared";
-import { AlertContent } from "../types/jsonb";
+import { User } from "@supabase/supabase-js";
+
+// Extend the Express Request type to include the 'user' property from Supabase
+declare global {
+  namespace Express {
+    export interface Request {
+      user?: User;
+    }
+  }
+}
 
 export const createAlert = async (req: Request, res: Response) => {
   try {
-    // Assuming you have middleware that attaches the user to the request
-    const userId = (req as any).user?.id;
+    const userId = req.user?.id;
     if (!userId) {
       return res.status(401).json({ error: "Unauthorized. User not found." });
     }
 
-    const { type, content, location, tripId } = req.body as {
-      type: AlertType;
-      content: AlertContent;
-      location: GeoJSONPoint;
-      tripId?: number;
-    };
+    const { type, content, location, trip_id, status } = req.body;
 
     // Basic validation for required fields
     if (!type || !content || !location) {
-      return res
-        .status(400)
-        .json({
-          error:
-            "Missing required fields: type, content, and location are required.",
-        });
+      return res.status(400).json({
+        error:
+          "Missing required fields: type, content, and location are required.",
+      });
     }
 
-    // Call the service with a single object argument
-    await alertService.createAlert({
-      userId,
-      tripId,
+    // Call the service with all required properties, providing a default for status
+    const newAlert = await alertService.createAlert({
+      user_id: userId,
+      trip_id,
       type,
       content,
       location,
+      status: status || "active", // Add the status property here
     });
 
-    return res.status(201).json({ message: "Alert created successfully." });
+    return res.status(201).json(newAlert);
   } catch (err) {
     console.error("Create alert controller error:", err);
     return res
@@ -48,12 +49,12 @@ export const createAlert = async (req: Request, res: Response) => {
 
 export const getUserAlerts = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user?.id;
+    const userId = req.user?.id;
     if (!userId) {
       return res.status(401).json({ error: "Unauthorized. User not found." });
     }
 
-    const alerts = await alertService.getUserAlerts(userId);
+    const alerts = await alertService.getAlertsByUser(userId);
 
     return res.status(200).json(alerts);
   } catch (err) {
@@ -73,19 +74,13 @@ export const updateAlertStatus = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Alert ID is required." });
     }
 
-    if (status !== "acknowledged" && status !== "dismissed") {
-      return res
-        .status(400)
-        .json({
-          error:
-            'Invalid status provided. Must be "acknowledged" or "dismissed".',
-        });
+    if (status !== "seen" && status !== "dismissed") {
+      return res.status(400).json({
+        error: 'Invalid status provided. Must be "seen" or "dismissed".',
+      });
     }
 
-    const updatedAlert = await alertService.updateAlertStatus(
-      parseInt(alertId, 10),
-      status
-    );
+    const updatedAlert = await alertService.updateAlertStatus(alertId, status);
 
     return res.status(200).json(updatedAlert);
   } catch (err) {

@@ -4,8 +4,8 @@ import { VehicleVulnerabilities } from "./jsonb";
  * Represents a record in the 'vehicles' table
  */
 export interface Vehicle {
-  id: number;
-  user_id: number;
+  id: string;
+  user_id: string;
   brand: string;
   model: string;
   number_plate: string;
