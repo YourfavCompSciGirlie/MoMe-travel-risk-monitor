@@ -27,6 +27,7 @@ const Help = () => {
   const toggleSection = (section) => {
     setActiveSection(activeSection === section ? null : section);
   };
+  
 
   const toggleCard = (card) => {
     setExpandedCard(expandedCard === card ? null : card);
@@ -275,7 +276,7 @@ const Help = () => {
         )}
       </section>
 
-{/* Quick help resources */}
+      {/* Quick help resources */}
       {!searchQuery ? (
         <>
           <section className="help-section quick-resources">
@@ -293,6 +294,7 @@ const Help = () => {
             </div>
           </section>
 
+          {/* Features */}
           <section className="help-section">
             <h2>MoMe Features Guide</h2>
             <div className="topic-cards">
@@ -348,7 +350,7 @@ const Help = () => {
         </section>
       )}
 
-{/* FAQ section */}
+      {/* FAQ section */}
       <section className="help-section">
         <h2>{searchQuery ? "Related FAQs" : "Frequently Asked Questions"}</h2>
         <div className="faq-list">
@@ -376,7 +378,7 @@ const Help = () => {
         </div>
       </section>
 
-{/* Contact details */}
+      {/* Contact details */}
       <section className="contact-card">
         <h2>Contact Support</h2>
         <div className="contact-content">

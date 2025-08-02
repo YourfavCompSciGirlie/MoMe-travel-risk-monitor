@@ -3,11 +3,12 @@
   --primary-light: #7fa8f0;
   --accent-color: #a2bd39;
   --accent-hover: #8ca82d;
-  --danger-color: #ff6b6b;
   --text-color: #2c3e50;
   --text-light: #7f8c8d;
   --border-color: #e0e0e0;
-  --bg-light: #f5f7fa;
+  --danger-color: #ef4444; /* Red-500 */
+  --danger-hover: #dc2626; /* Red-600 */
+  --bg-light: #f3f4f6; /* Gray-100 */
   --success-color: #4CAF50;
 }
 
@@ -133,23 +134,43 @@
 
 /* 🔥 Updated Delete (Trash Can) Button */
 .delete-btn {
-  width: 40px;
-  height: 40px;
+  width: 80px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-light);
+  background: #ef4444;
   border: none;
   border-radius: 6px;
   color: var(--danger-color);
-  font-size: 1.2rem;
+  font-size: 0.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .delete-btn:hover {
-  background: #ffe6e6;
-  color: red;
+  background: #ef4444;
+  color: white;
+}
+
+.delete-button-icon {
+  font-size: 0.9rem;
+  color: #dc2626;
+}
+
+.delete-button-text {
+  margin-left: 0.25rem;
+  margin-top: 0.20rem;
+  justify-items: center;
+  font-size: 1rem;
+}
+
+.delete-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.delete-btn:hover svg {
+  transform: scale(1.0);
 }
 
 .sensitivity-settings {

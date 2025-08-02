@@ -89,11 +89,11 @@ const AlertsHistory = () => {
 
   const alertTypes = [
     { id: 'all', name: 'All Alerts' },
-    { id: 'hail', name: 'Hail' },
-    { id: 'rain', name: 'Rain' },
-    { id: 'wind', name: 'Wind' },
-    { id: 'flood', name: 'Flood' },
-    { id: 'fire', name: 'Fire' },
+    { id: 'hail', name: 'Hail', color: '#60a5fa' },
+    { id: 'rain', name: 'Rain', color: '#3b82f6' },
+    { id: 'wind', name: 'Wind', color: '#93c5fd' },
+    { id: 'flood', name: 'Flood', color: '#1d4ed8' },
+    { id: 'fire', name: 'Fire', color: '#ef4444' },
   ];
 
   const filteredAlerts = filter === 'all' 
@@ -116,7 +116,15 @@ const AlertsHistory = () => {
   };
 
   const getAlertIcon = (type) => {
-    return <FiAlertTriangle className={`alert-icon ${type}`} />;
+    const typeInfo = alertTypes.find(t => t.id === type);
+    return (
+      <div 
+        className="alert-icon-container"
+        style={{ backgroundColor: typeInfo?.color || '#6b7280' }}
+      >
+        <FiAlertTriangle className="alert-icon" />
+      </div>
+    );
   };
 
   const getSeverityColor = (severity) => {
@@ -164,43 +172,68 @@ const AlertsHistory = () => {
         <div className="alerts-header">
           <h1>South African Weather Alerts</h1>
           <p className="subtitle">Recent weather warnings and advisories</p>
+          
+          <div className="filters-section">
+            <button 
+              className="filter-toggle"
+              onClick={() => setShowFilters(!showFilters)}
+              aria-expanded={showFilters}
+              aria-label="Filter alerts"
+            >
+              <FiFilter className="filter-icon" />
+              {alertTypes.find(t => t.id === filter)?.name || 'Filter'}
+              {showFilters ? <FiChevronUp /> : <FiChevronDown />}
+            </button>
+
+            {showFilters && (
+              <div className="filter-options">
+                {alertTypes.map(type => (
+                  <button
+                    key={type.id}
+                    className={`filter-option ${filter === type.id ? 'active' : ''}`}
+                    onClick={() => {
+                      setFilter(type.id);
+                      setShowFilters(false);
+                    }}
+                    aria-label={`Filter by ${type.name}`}
+                    style={{ 
+                      backgroundColor: filter === type.id ? type.color : '#f3f4f6',
+                      color: filter === type.id ? '#fff' : '#111827'
+                    }}
+                  >
+                    {type.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="filters-section">
-          <button 
-            className="filter-toggle"
-            onClick={() => setShowFilters(!showFilters)}
-            aria-expanded={showFilters}
-            aria-label="Filter alerts"
-          >
-            <FiFilter className="filter-icon" />
-            {alertTypes.find(t => t.id === filter)?.name || 'Filter'}
-            {showFilters ? <FiChevronUp /> : <FiChevronDown />}
-          </button>
-
-          {showFilters && (
-            <div className="filter-options">
-              {alertTypes.map(type => (
-                <button
-                  key={type.id}
-                  className={`filter-option ${filter === type.id ? 'active' : ''}`}
-                  onClick={() => {
-                    setFilter(type.id);
-                    setShowFilters(false);
-                  }}
-                  aria-label={`Filter by ${type.name}`}
-                >
-                  {type.name}
-                </button>
-              ))}
-            </div>
-          )}
+        <div className="alerts-stats">
+          <div className="stat-card">
+            <span className="stat-number">{alerts.length}</span>
+            <span className="stat-label">Total Alerts</span>
+          </div>
+          <div className="stat-card">
+            <span className="stat-number">{alerts.filter(a => a.severity === 'high').length}</span>
+            <span className="stat-label">High Severity</span>
+          </div>
+          <div className="stat-card">
+            <span className="stat-number">{new Set(alerts.map(a => a.location)).size}</span>
+            <span className="stat-label">Affected Areas</span>
+          </div>
         </div>
 
         <div className="alerts-list">
           {filteredAlerts.length === 0 ? (
             <div className="no-alerts">
               <p>No weather alerts for your selected filter</p>
+              <button 
+                className="reset-filter"
+                onClick={() => setFilter('all')}
+              >
+                Show all alerts
+              </button>
             </div>
           ) : (
             filteredAlerts.map(alert => (
@@ -223,6 +256,12 @@ const AlertsHistory = () => {
                       <span className="alert-time">
                         <FiCalendar size={14} /> {formatDate(alert.timestamp)}
                       </span>
+                      <span 
+                        className="severity-badge"
+                        style={{ backgroundColor: getSeverityColor(alert.severity) }}
+                      >
+                        {alert.severity === 'high' ? 'High' : 'Medium'} severity
+                      </span>
                     </div>
                   </div>
                   <div className="alert-toggle">
@@ -232,6 +271,9 @@ const AlertsHistory = () => {
 
                 {expandedAlert === alert.id && (
                   <div className="alert-details">
+                    <div className="alert-description">
+                      <p>{alert.description}</p>
+                    </div>
                     <div className="map-snippet">
                       <MapContainer
                         center={[alert.coordinates.lat, alert.coordinates.lng]}
@@ -292,19 +334,36 @@ const AlertsHistory = () => {
               <FiX />
             </button>
             
-            <div 
-              className="modal-badge"
-              style={{ backgroundColor: getSeverityColor(selectedAlert.severity) }}
-            >
-              {getAlertIcon(selectedAlert.type)}
+            <div className="modal-header">
+              <div 
+                className="modal-badge"
+                style={{ backgroundColor: getSeverityColor(selectedAlert.severity) }}
+              >
+                {getAlertIcon(selectedAlert.type)}
+              </div>
+              
+              <h2>{selectedAlert.message}</h2>
             </div>
             
-            <h2>{selectedAlert.message}</h2>
             <div className="badge-description">
-              <p><strong>Location:</strong> {selectedAlert.location}</p>
-              <p><strong>Time:</strong> {formatDate(selectedAlert.timestamp)} SAST</p>
-              <p><strong>Coordinates:</strong> {selectedAlert.coordinates.lat.toFixed(4)}, {selectedAlert.coordinates.lng.toFixed(4)}</p>
-              <p><strong>Details:</strong> {selectedAlert.description}</p>
+              <div className="description-item">
+                <span className="description-label">Location:</span>
+                <span className="description-value">{selectedAlert.location}</span>
+              </div>
+              <div className="description-item">
+                <span className="description-label">Time:</span>
+                <span className="description-value">{formatDate(selectedAlert.timestamp)} SAST</span>
+              </div>
+              <div className="description-item">
+                <span className="description-label">Coordinates:</span>
+                <span className="description-value">
+                  {selectedAlert.coordinates.lat.toFixed(4)}, {selectedAlert.coordinates.lng.toFixed(4)}
+                </span>
+              </div>
+              <div className="description-item full-width">
+                <span className="description-label">Details:</span>
+                <p className="description-value">{selectedAlert.description}</p>
+              </div>
             </div>
             
             <div className="modal-map">
@@ -335,13 +394,20 @@ const AlertsHistory = () => {
               )}
             </div>
             
-            <button 
-              className="modal-close-btn"
-              onClick={() => setSelectedAlert(null)}
-              aria-label="Close modal"
-            >
-              Close
-            </button>
+            <div className="modal-actions">
+              <button 
+                className="modal-share-btn"
+                onClick={() => handleShare(selectedAlert)}
+              >
+                <FiShare2 size={16} /> Share Alert
+              </button>
+              <button 
+                className="modal-close-btn"
+                onClick={() => setSelectedAlert(null)}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

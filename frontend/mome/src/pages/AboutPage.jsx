@@ -7,43 +7,6 @@ import image1 from '../assets/Images/BigCarTop.jpg';
 const AboutPage = () => {
   return (
     <div className="about-page">
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="container">
-          <div className="hero-grid">
-            <div className="hero-content">
-              <h1 className="hero-title">
-                Drive Smarter with <span className="brand-accent">MoMe</span>
-              </h1>
-              <p className="hero-tagline">
-                Real-time hazard detection that protects you on every journey
-              </p>
-              <div className="hero-stats">
-                <div className="stat-item">
-                  <div className="stat-number">99%</div>
-                  <div className="stat-label">Accuracy</div>
-                </div>
-                <div className="stat-item">
-                  <div className="stat-number">30+</div>
-                  <div className="stat-label">Hazards Detected</div>
-                </div>
-                <div className="stat-item">
-                  <div className="stat-number">24/7</div>
-                  <div className="stat-label">Protection</div>
-                </div>
-              </div>
-            </div>
-            <div className="hero-image-container">
-              <img 
-                src={image1} 
-                alt="Traffic monitoring dashboard" 
-                className="hero-image"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Problem Section */}
       <section className="problem-section section-padding">
         <div className="container">

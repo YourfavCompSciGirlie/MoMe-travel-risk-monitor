@@ -3,7 +3,9 @@ import {
   FiChevronDown, FiCheck, FiPlus, FiStar, FiChevronRight, FiAlertTriangle, FiWind, FiDroplet
 } from 'react-icons/fi';
 import {
-  FaCar, FaTruck, FaMotorcycle, FaShieldAlt, FaCarSide, FaTruckPickup, FaShuttleVan, FaTrashAlt
+  FaCar, FaTruck, FaMotorcycle, FaShieldAlt, FaCarSide, FaTruckPickup, FaShuttleVan, FaTrashAlt,
+  FaEye,
+  FaTrash
 } from 'react-icons/fa';
 import { IoMdSnow } from 'react-icons/io';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -216,6 +218,7 @@ const VehicleSettings = () => {
                     title="Delete this vehicle"
                   >
                     <FaTrashAlt />
+                    <span className="delete-button-text"><FaTrashAlt /></span>
                   </motion.button>
                   <motion.div
                     animate={{ rotate: expandedVehicle === vehicle.id ? 90 : 0 }}

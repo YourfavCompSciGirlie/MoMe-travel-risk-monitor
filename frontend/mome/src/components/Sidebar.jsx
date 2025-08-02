@@ -17,7 +17,7 @@ const Sidebar = () => {
   return (
     <aside className="mome-sidebar">
       <div className="sidebar-top">
-        <div className="sidebar-logo">🌍 MoMe</div>
+        <div className="sidebar-logo">🌍MoMe</div>
         <nav className="sidebar-nav">
           <NavLink to="/dashboard"><FiHome /> Dashboard</NavLink>
           <NavLink to="/alerts"><FiAlertTriangle /> Alerts</NavLink>
