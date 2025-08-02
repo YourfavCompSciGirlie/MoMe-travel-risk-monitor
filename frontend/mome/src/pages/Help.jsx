@@ -23,19 +23,22 @@ const Help = () => {
   const [activeSection, setActiveSection] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCard, setExpandedCard] = useState(null);
+  const [expandedFAQ, setExpandedFAQ] = useState(null);
 
   const toggleSection = (section) => {
     setActiveSection(activeSection === section ? null : section);
   };
-  
 
   const toggleCard = (card) => {
     setExpandedCard(expandedCard === card ? null : card);
   };
 
+  const toggleFAQ = (index) => {
+    setExpandedFAQ(expandedFAQ === index ? null : index);
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
-    // Implement search functionality
     console.log('Searching for:', searchQuery);
   };
 
@@ -246,7 +249,7 @@ const Help = () => {
     )
   );
 
-  return (
+ return (
     <div className="help-container">
       {/* Page header */}
       <header className="help-header">
@@ -353,20 +356,31 @@ const Help = () => {
       {/* FAQ section */}
       <section className="help-section">
         <h2>{searchQuery ? "Related FAQs" : "Frequently Asked Questions"}</h2>
-        <div className="faq-list">
+        <div className="faq-accordion">
           {(searchQuery ? filteredFAQs : faqs).map((faq, index) => (
-            <div
-              key={index}
-              className={`faq-item ${activeSection === `faq-${index}` ? 'active' : ''}`}
-              onClick={() => toggleSection(`faq-${index}`)}
+            <div 
+              key={index} 
+              className={`faq-item ${expandedFAQ === index ? 'expanded' : ''}`}
             >
-              <div className="faq-question">
-                <FaQuestion className="faq-icon" />
-                <span>{faq.question}</span>
-                {activeSection === `faq-${index}` ? <FaChevronUp /> : <FaChevronDown />}
-              </div>
-              {activeSection === `faq-${index}` && (
-                <div className="faq-answer">
+              <button
+                className="faq-question"
+                onClick={() => toggleFAQ(index)}
+                aria-expanded={expandedFAQ === index}
+                aria-controls={`faq-answer-${index}`}
+              >
+                <div className="faq-question-content">
+                  <FaQuestion className="faq-icon" />
+                  <span>{faq.question}</span>
+                </div>
+                {expandedFAQ === index ? <FaChevronUp /> : <FaChevronDown />}
+              </button>
+              
+              {expandedFAQ === index && (
+                <div 
+                  id={`faq-answer-${index}`}
+                  className="faq-answer"
+                  aria-hidden={expandedFAQ !== index}
+                >
                   <p>{faq.answer}</p>
                   {!searchQuery && (
                     <span className="faq-category">Category: {faq.category}</span>
