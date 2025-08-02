@@ -1,5 +1,6 @@
 import { supabase } from "../config/db";
 import { User } from "../types/user";
+import bcrypt from "bcryptjs";
 
 export const registerUser = async (
   email: string,
@@ -8,6 +9,8 @@ export const registerUser = async (
   name: string,
   surname: string
 ): Promise<User> => {
+  const salt = await bcrypt.genSalt(10);
+  const password_hash = await bcrypt.hash(password, salt);
   // Step 1: Create the user in Supabase's authentication system.
   const { data: authData, error: authError } =
     await supabase.auth.admin.createUser({
@@ -35,6 +38,7 @@ export const registerUser = async (
       name,
       surname,
       phone_number,
+      password: password_hash,
     })
     .select()
     .single();

@@ -8,7 +8,7 @@ import riskScoreRoutes from "./routes/riskScoreRoutes";
 import routeRoutes from "./routes/routeRoutes";
 import userRoutes from "./routes/userRoutes";
 import vehicleRoutes from "./routes/vehicleRoutes";
-import weatherRoutes from "./routes/weatherRoutes.js";
+import weatherRoutes from "./routes/weatherRoutes";
 import voicesRoutes from "./utils/voiceUtils";
 
 dotenv.config();

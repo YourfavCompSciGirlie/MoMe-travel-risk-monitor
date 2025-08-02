@@ -8,13 +8,14 @@
         "start": "node dist/server.js",
         "util:voice": "ts-node-dev --respawn utils/voiceUtils.ts",
         "util:TTS": "ts-node-dev --respawn utils/TTS.ts",
-		"util:weather": "ts-node-dev --respawn utils/WeatherRequest.ts"
+        "util:weather": "ts-node-dev --respawn utils/WeatherRequest.ts"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "description": "Backend server for MoMe travel risk monitor",
     "dependencies": {
+        "bcryptjs": "^3.0.2",
         "cors": "^2.8.5",
         "express": "^5.1.0",
         "jsonwebtoken": "^9.0.2",
