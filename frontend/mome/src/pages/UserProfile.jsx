@@ -110,7 +110,7 @@ const UserProfile = () => {
       <div className="profile-card">
         <div className="profile-header">
           <div className="profile-avatar">
-            <FiUser size={48} />
+            <FiUser size={40} />
           </div>
           <h2>User Profile</h2>
           <p>Manage your personal information and settings</p>
@@ -119,133 +119,121 @@ const UserProfile = () => {
         <form onSubmit={handleSaveProfile} className="profile-form">
           <div className="form-row">
             <div className={`form-group ${errors.name ? 'error' : ''}`}>
+              <label>First Name</label>
               <div className="input-container">
                 <FiUser className="input-icon" />
                 {isEditing ? (
-                  <>
-                    <input
-                      type="text"
-                      name="name"
-                      value={profile.name}
-                      onChange={handleInputChange}
-                      placeholder="Enter your name"
-                    />
-                    {errors.name && <span className="error-message">{errors.name}</span>}
-                  </>
+                  <input
+                    type="text"
+                    name="name"
+                    value={profile.name}
+                    onChange={handleInputChange}
+                    placeholder="Enter your name"
+                  />
                 ) : (
                   <div className="profile-value">{profile.name}</div>
                 )}
               </div>
-              <label>First Name</label>
+              {errors.name && <span className="error-message">{errors.name}</span>}
             </div>
 
             <div className={`form-group ${errors.surname ? 'error' : ''}`}>
+              <label>Last Name</label>
               <div className="input-container">
                 <FiUser className="input-icon" />
                 {isEditing ? (
-                  <>
-                    <input
-                      type="text"
-                      name="surname"
-                      value={profile.surname}
-                      onChange={handleInputChange}
-                      placeholder="Enter your surname"
-                    />
-                    {errors.surname && <span className="error-message">{errors.surname}</span>}
-                  </>
+                  <input
+                    type="text"
+                    name="surname"
+                    value={profile.surname}
+                    onChange={handleInputChange}
+                    placeholder="Enter your surname"
+                  />
                 ) : (
                   <div className="profile-value">{profile.surname}</div>
                 )}
               </div>
-              <label>Last Name</label>
+              {errors.surname && <span className="error-message">{errors.surname}</span>}
             </div>
           </div>
 
           <div className="form-row">
             <div className={`form-group ${errors.vehicle ? 'error' : ''}`}>
+              <label>Vehicle Make</label>
               <div className="input-container">
                 <FaCar className="input-icon" />
                 {isEditing ? (
-                  <>
-                    <input
-                      type="text"
-                      name="vehicle"
-                      value={profile.vehicle}
-                      onChange={handleInputChange}
-                      placeholder="Enter vehicle make"
-                    />
-                    {errors.vehicle && <span className="error-message">{errors.vehicle}</span>}
-                  </>
+                  <input
+                    type="text"
+                    name="vehicle"
+                    value={profile.vehicle}
+                    onChange={handleInputChange}
+                    placeholder="Enter vehicle make"
+                  />
                 ) : (
                   <div className="profile-value">{profile.vehicle}</div>
                 )}
               </div>
-              <label>Vehicle Make</label>
+              {errors.vehicle && <span className="error-message">{errors.vehicle}</span>}
             </div>
 
             <div className={`form-group ${errors.vehicleModel ? 'error' : ''}`}>
+              <label>Vehicle Model</label>
               <div className="input-container">
                 <FiTruck className="input-icon" />
                 {isEditing ? (
-                  <>
-                    <input
-                      type="text"
-                      name="vehicleModel"
-                      value={profile.vehicleModel}
-                      onChange={handleInputChange}
-                      placeholder="Enter vehicle model"
-                    />
-                    {errors.vehicleModel && <span className="error-message">{errors.vehicleModel}</span>}
-                  </>
+                  <input
+                    type="text"
+                    name="vehicleModel"
+                    value={profile.vehicleModel}
+                    onChange={handleInputChange}
+                    placeholder="Enter vehicle model"
+                  />
                 ) : (
                   <div className="profile-value">{profile.vehicleModel}</div>
                 )}
               </div>
-              <label>Vehicle Model</label>
+              {errors.vehicleModel && <span className="error-message">{errors.vehicleModel}</span>}
             </div>
           </div>
 
           <div className="form-row">
             <div className={`form-group ${errors.vehicleYear ? 'error' : ''}`}>
+              <label>Year</label>
               <div className="input-container">
                 <FiTruck className="input-icon" />
                 {isEditing ? (
-                  <>
-                    <input
-                      type="text"
-                      name="vehicleYear"
-                      value={profile.vehicleYear}
-                      onChange={handleInputChange}
-                      placeholder="Enter vehicle year"
-                    />
-                    {errors.vehicleYear && <span className="error-message">{errors.vehicleYear}</span>}
-                  </>
+                  <input
+                    type="text"
+                    name="vehicleYear"
+                    value={profile.vehicleYear}
+                    onChange={handleInputChange}
+                    placeholder="Enter vehicle year"
+                  />
                 ) : (
                   <div className="profile-value">{profile.vehicleYear}</div>
                 )}
               </div>
-              <label>Year</label>
+              {errors.vehicleYear && <span className="error-message">{errors.vehicleYear}</span>}
             </div>
 
             <div className={`form-group ${errors.area ? 'error' : ''}`}>
+              <label>Area of Residence</label>
               <div className="input-container">
                 <FiMapPin className="input-icon" />
                 {isEditing ? (
-                  <>
-                    <input
-                      type="text"
-                      name="area"
-                      value={profile.area}
-                      onChange={handleInputChange}
-                      placeholder="Enter your area"
-                    />
-                    {errors.area && <span className="error-message">{errors.area}</span>}
-                  </>
+                  <input
+                    type="text"
+                    name="area"
+                    value={profile.area}
+                    onChange={handleInputChange}
+                    placeholder="Enter your area"
+                  />
                 ) : (
                   <div className="profile-value">{profile.area}</div>
                 )}
               </div>
-              <label>Area of Residence</label>
+              {errors.area && <span className="error-message">{errors.area}</span>}
             </div>
           </div>
 
@@ -294,6 +282,7 @@ const UserProfile = () => {
             </h3>
 
             <div className={`form-group ${errors.current ? 'error' : ''}`}>
+              <label>Current Password</label>
               <div className="input-container">
                 <FiLock className="input-icon" />
                 <input
@@ -311,11 +300,11 @@ const UserProfile = () => {
                   {showPasswords.current ? <FiEyeOff /> : <FiEye />}
                 </button>
               </div>
-              <label>Current Password</label>
               {errors.current && <span className="error-message">{errors.current}</span>}
             </div>
 
             <div className={`form-group ${errors.new ? 'error' : ''}`}>
+              <label>New Password</label>
               <div className="input-container">
                 <FiLock className="input-icon" />
                 <input
@@ -333,11 +322,11 @@ const UserProfile = () => {
                   {showPasswords.new ? <FiEyeOff /> : <FiEye />}
                 </button>
               </div>
-              <label>New Password</label>
               {errors.new && <span className="error-message">{errors.new}</span>}
             </div>
 
             <div className={`form-group ${errors.confirm ? 'error' : ''}`}>
+              <label>Confirm Password</label>
               <div className="input-container">
                 <FiLock className="input-icon" />
                 <input
@@ -355,7 +344,6 @@ const UserProfile = () => {
                   {showPasswords.confirm ? <FiEyeOff /> : <FiEye />}
                 </button>
               </div>
-              <label>Confirm Password</label>
               {errors.confirm && <span className="error-message">{errors.confirm}</span>}
             </div>
 
