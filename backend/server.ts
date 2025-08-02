@@ -6,6 +6,8 @@ import userRoutes from './routes/userRoutes';
 import vehicleRoutes from './routes/vehicleRoutes';
 import alertRoutes from './routes/alertRoutes';
 import riskScoreRoutes from './routes/riskScoreRoutes';
+import routeRoutes from './routes/routeRoutes';
+import dashboardRoutes from './routes/dashboardRoutes';
 
 dotenv.config();
 
@@ -22,6 +24,8 @@ app.use('/api/user', userRoutes);
 app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/alerts', alertRoutes);
 app.use('/api/risk-score', riskScoreRoutes);
+app.use('/api/routes', routeRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

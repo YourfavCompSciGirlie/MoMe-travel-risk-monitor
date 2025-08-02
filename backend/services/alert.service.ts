@@ -39,6 +39,17 @@ export const createAlert = async (
   return result.rows[0];
 };
 
+export const createWeatherAlertForRoute = async (
+  userId: string,
+  routeId: string,
+  weather_type: string,
+  severity: number,
+  message: string,
+  location: string
+) => {
+  return createAlert(userId, 'weather', severity, message, location, routeId, weather_type);
+};
+
 /**
  * Get all alerts for a user
  */
