@@ -2,14 +2,18 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { supabase } from "../config/db";
+import { User } from "@supabase/supabase-js"; // Import the specific User type
 
+// This block consistently defines the 'user' property on the Request object.
+// This should be the single source of truth for this type definition.
 declare global {
   namespace Express {
     export interface Request {
-      user?: any;
+      user?: User;
     }
   }
 }
+
 const authMiddleware = async (
   req: Request,
   res: Response,
@@ -24,7 +28,7 @@ const authMiddleware = async (
   const token = authHeader.split(" ")[1];
 
   try {
-    // Use Supabase's built-in method to verify the token and get the user
+    // Use Supabase's built-in method to verify the token
     const {
       data: { user },
       error,
@@ -32,7 +36,6 @@ const authMiddleware = async (
 
     if (error) {
       console.error("Supabase auth error:", error.message);
-      // Provide a more specific error based on Supabase's response
       return res
         .status(401)
         .json({ message: error.message || "Invalid token" });
@@ -42,7 +45,7 @@ const authMiddleware = async (
       return res.status(401).json({ message: "User not found for this token" });
     }
 
-    // Attach the authenticated user object to the request for use in controllers
+    // Attach the authenticated user object to the request
     req.user = user;
 
     next();

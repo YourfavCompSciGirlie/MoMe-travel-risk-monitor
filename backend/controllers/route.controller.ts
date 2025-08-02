@@ -15,18 +15,19 @@ export const createSavedRouteController = async (
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const { name, startLocation, endLocation, routePath } = req.body;
-    if (!name || !startLocation || !endLocation) {
+    const { name, start_location, end_location, routePath } = req.body;
+    if (!name || !start_location || !end_location) {
       return res.status(400).json({
-        error: "Missing required fields: name, startLocation, and endLocation.",
+        error:
+          "Missing required fields: name, start_location, and end_location.",
       });
     }
 
     const savedRoute = await routeService.createSavedRoute({
       userId,
       name,
-      startLocation,
-      endLocation,
+      startLocation: start_location,
+      endLocation: end_location,
       routePath,
     });
 
@@ -71,18 +72,18 @@ export const createTripController = async (req: Request, res: Response) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const { vehicleId, savedRouteId, plannedRoutePath } = req.body;
-    if (!vehicleId) {
+    const { vehicle_id, saved_route_id, planned_route_path } = req.body;
+    if (!vehicle_id) {
       return res
         .status(400)
-        .json({ error: "Missing required field: vehicleId." });
+        .json({ error: "Missing required field: vehicle_id." });
     }
 
     const trip = await routeService.createTrip({
       userId,
-      vehicleId,
-      savedRouteId,
-      plannedRoutePath,
+      vehicleId: vehicle_id,
+      savedRouteId: saved_route_id,
+      plannedRoutePath: planned_route_path,
     });
 
     return res.status(201).json(trip);

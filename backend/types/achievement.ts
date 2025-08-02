@@ -2,7 +2,7 @@
  * Represents a record in the 'achievements' table
  */
 export interface Achievement {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   icon_url?: string;
@@ -12,7 +12,7 @@ export interface Achievement {
  * Represents a record in the 'user_achievements' join table
  */
 export interface UserAchievement {
-  user_id: number;
-  achievement_id: number;
+  user_id: string;
+  achievement_id: string;
   earned_at: string; // ISO 8601 date string
 }
