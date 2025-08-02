@@ -1,63 +1,76 @@
-// services/alert.service.ts
+import { supabase } from '../config/db';
+import { AlertStatus, AlertType, GeoJSONPoint } from '../types/shared';
+import { Alert }  from '../types/alert';
+import { AlertContent } from '../types/jsonb';
 
-import pool from '../config/db';
+export const createAlert = async (alertData: {
+  userId: number;
+  tripId?: number;
+  type: AlertType;
+  status?: AlertStatus;
+  content: AlertContent;
+  location: GeoJSONPoint;
+}): Promise<void> => {
+  const { error } = await supabase.rpc('create_alert_with_location', {
+    p_user_id: alertData.userId,
+    p_trip_id: alertData.tripId,
+    p_type: alertData.type,
+    p_status: alertData.status || 'sent', // Default to 'sent' if not provided
+    p_content: alertData.content,
+    p_location: alertData.location,
+  });
 
-export interface Alert {
-  id: string;
-  user_id: string;
-  alert_type: string;       // NEW: e.g., 'weather', 'crime'
-  weather_type?: string;    // Optional — only if alert_type === 'weather'
-  severity: number;
-  message: string;
-  location: string;
-  route_id?: string;
-  timestamp: Date;
-}
+  if (error) {
+    console.error('Error creating alert:', error);
+    throw new Error('Could not create alert in the database.');
+  }
+};
 
-/**
- * Create a new weather alert (logged for a user)
- */
-export const createAlert = async (
-  userId: string,
-  alert_type: string,
-  severity: number,
-  message: string,
-  location: string,
-  route_id?: string,
-  weather_type?: string
+export const createWeatherAlertForTrip = async (
+  userId: number,
+  tripId: number,
+  content: AlertContent,
+  location: GeoJSONPoint
+): Promise<void> => {
+  return createAlert({
+    userId,
+    tripId,
+    type: 'weather',
+    content,
+    location,
+  });
+};
+
+export const getUserAlerts = async (userId: number): Promise<Alert[]> => {
+  const { data, error } = await supabase
+    .from('alerts')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching user alerts:', error);
+    throw new Error('Could not fetch user alerts.');
+  }
+
+  return data;
+};
+
+export const updateAlertStatus = async (
+  alertId: number,
+  status: 'acknowledged' | 'dismissed'
 ): Promise<Alert> => {
-  const result = await pool.query(
-    `INSERT INTO alerts (
-      user_id, alert_type, severity, message,
-      location, route_id, weather_type
-    )
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
-    RETURNING *`,
-    [userId, alert_type, severity, message, location, route_id, weather_type]
-  );
+  const { data, error } = await supabase
+    .from('alerts')
+    .update({ status })
+    .eq('id', alertId)
+    .select()
+    .single(); // Use .single() to get a single object back, not an array
 
-  return result.rows[0];
-};
+  if (error) {
+    console.error('Error updating alert status:', error);
+    throw new Error('Could not update alert status.');
+  }
 
-export const createWeatherAlertForRoute = async (
-  userId: string,
-  routeId: string,
-  weather_type: string,
-  severity: number,
-  message: string,
-  location: string
-) => {
-  return createAlert(userId, 'weather', severity, message, location, routeId, weather_type);
-};
-
-/**
- * Get all alerts for a user
- */
-export const getUserAlerts = async (userId: string): Promise<Alert[]> => {
-  const result = await pool.query(
-    `SELECT * FROM alerts WHERE user_id = $1 ORDER BY timestamp DESC`,
-    [userId]
-  );
-
-  return result.rows;
+  return data;
 };

@@ -1,84 +1,116 @@
-// controllers/route.controller.ts
+import { Request, Response } from "express";
+import * as routeService from "../services/route.service";
 
-import { Request, Response } from 'express';
-import { calculateRiskScore } from '../services/riskScore.service';
-import * as routeService from '../services/route.service';
-
-// POST /api/routes
-export const createRoute = async (req: Request, res: Response) => {
+/**
+ * POST /api/routes/saved
+ * Creates a new saved route for the authenticated user.
+ */
+export const createSavedRouteController = async (
+  req: Request,
+  res: Response
+) => {
   try {
     const userId = (req as any).user?.id;
-    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
-
-    const {
-        origin,
-        destination,
-        route_geometry,
-        weather_severity,
-        traffic_level,
-        crime_score,
-        hail_sensitive,
-        wind_sensitive,
-        duration_minutes
-    } = req.body;
-
-    if (!origin || !destination) {
-      return res.status(400).json({ error: 'Origin and destination are required' });
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
-    // Calculate risk score
-    const riskResult = calculateRiskScore({
-        weather_severity,
-        traffic_level,
-        crime_score,
-        hail_sensitive: hail_sensitive ?? false,
-        wind_sensitive: wind_sensitive ?? false
+    const { name, startLocation, endLocation, routePath } = req.body;
+    if (!name || !startLocation || !endLocation) {
+      return res.status(400).json({
+        error: "Missing required fields: name, startLocation, and endLocation.",
+      });
+    }
+
+    const savedRoute = await routeService.createSavedRoute({
+      userId,
+      name,
+      startLocation,
+      endLocation,
+      routePath,
     });
 
-    // Store it in the route
-    const route = await routeService.createRoute(
-        userId,
-        origin,
-        destination,
-        route_geometry,
-        riskResult.score,
-        duration_minutes
-    );
-
-    return res.status(201).json({ message: 'Route created', route });
+    return res.status(201).json(savedRoute);
   } catch (err) {
-    console.error('Create route error:', err);
-    return res.status(500).json({ error: 'Server error' });
+    console.error("Create saved route error:", err);
+    return res
+      .status(500)
+      .json({ error: "An internal server error occurred." });
   }
 };
 
-// GET /api/routes
-export const getUserRoutes = async (req: Request, res: Response) => {
+/**
+ * GET /api/routes/saved
+ * Fetches all saved routes for the authenticated user.
+ */
+export const getSavedRoutesController = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user?.id;
-    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
-    const routes = await routeService.getUserRoutes(userId);
-    return res.status(200).json(routes);
+    const savedRoutes = await routeService.getUserSavedRoutes(userId);
+    return res.status(200).json(savedRoutes);
   } catch (err) {
-    console.error('Get user routes error:', err);
-    return res.status(500).json({ error: 'Server error' });
+    console.error("Get saved routes error:", err);
+    return res
+      .status(500)
+      .json({ error: "An internal server error occurred." });
   }
 };
 
-// GET /api/routes/:routeId
-export const getRouteById = async (req: Request, res: Response) => {
+/**
+ * POST /api/routes/trips
+ * Creates a new trip log for the authenticated user.
+ */
+export const createTripController = async (req: Request, res: Response) => {
   try {
-    const routeId = req.params.routeId;
-
-    const route = await routeService.getRouteById(routeId);
-    if (!route) {
-      return res.status(404).json({ error: 'Route not found' });
+    const userId = (req as any).user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
-    return res.status(200).json(route);
+    const { vehicleId, savedRouteId, plannedRoutePath } = req.body;
+    if (!vehicleId) {
+      return res
+        .status(400)
+        .json({ error: "Missing required field: vehicleId." });
+    }
+
+    const trip = await routeService.createTrip({
+      userId,
+      vehicleId,
+      savedRouteId,
+      plannedRoutePath,
+    });
+
+    return res.status(201).json(trip);
   } catch (err) {
-    console.error('Get route by ID error:', err);
-    return res.status(500).json({ error: 'Server error' });
+    console.error("Create trip error:", err);
+    return res
+      .status(500)
+      .json({ error: "An internal server error occurred." });
+  }
+};
+
+/**
+ * GET /api/routes/trips
+ * Fetches all past trips for the authenticated user.
+ */
+export const getTripsController = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const trips = await routeService.getUserTrips(userId);
+    return res.status(200).json(trips);
+  } catch (err) {
+    console.error("Get trips error:", err);
+    return res
+      .status(500)
+      .json({ error: "An internal server error occurred." });
   }
 };

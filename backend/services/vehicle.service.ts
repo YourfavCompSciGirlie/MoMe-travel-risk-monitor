@@ -1,110 +1,81 @@
-// services/vehicle.service.ts
+import { supabase } from "../config/db";
+import { Vehicle } from "../types/vehicle";
+import { VehicleVulnerabilities } from "../types/jsonb";
 
-import pool from '../config/db'; 
+export const createVehicle = async (vehicleData: {
+  userId: string;
+  brand: string;
+  model: string;
+  number_plate: string;
+  year?: number;
+  vulnerabilities?: VehicleVulnerabilities;
+}): Promise<Vehicle> => {
+  const { data, error } = await supabase
+    .from("vehicles")
+    .insert({
+      user_id: vehicleData.userId,
+      brand: vehicleData.brand,
+      model: vehicleData.model,
+      number_plate: vehicleData.number_plate,
+      year: vehicleData.year,
+      vulnerabilities: vehicleData.vulnerabilities,
+    })
+    .select()
+    .single();
 
-export interface Vehicle {
-  id: string;
-  user_id: string;
-  type: string;
-  nickname?: string;
-  hail_sensitive: boolean;
-  wind_sensitive: boolean;
-  created_at: Date;
-}
-
-/**
- * Create a new vehicle for a user
- */
-export const createVehicle = async (
-  userId: string,
-  make: string,
-  model: string,
-  number_plate: string,
-  year: number,
-  type: string,
-  nickname: string,
-  hailSensitive: boolean,
-  windSensitive: boolean
-): Promise<Vehicle> => {
-  const result = await pool.query(
-    `INSERT INTO vehicles (
-       user_id, make, model, number_plate, year,
-       type, nickname, hail_sensitive, wind_sensitive
-     )
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-     RETURNING *`,
-    [
-      userId, make, model, number_plate, year,
-      type, nickname, hailSensitive, windSensitive
-    ]
-  );
-
-  return result.rows[0];
-};
-
-/**
- * Get all vehicles for a user
- */
-export const getVehiclesByUser = async (userId: string): Promise<Vehicle[]> => {
-  const result = await pool.query(
-    `SELECT * FROM vehicles WHERE user_id = $1`,
-    [userId]
-  );
-
-  return result.rows;
-};
-
-/**
- * Update an existing vehicle
- */
-export const updateVehicle = async (
-  vehicleId: string,
-  updates: {
-    make?: string;
-    model?: string;
-    number_plate?: string;
-    year?: number;
-    type?: string;
-    nickname?: string;
-    hail_sensitive?: boolean;
-    wind_sensitive?: boolean;
+  if (error) {
+    console.error("Error creating vehicle:", error);
+    throw new Error("Could not create vehicle.");
   }
-): Promise<Vehicle | null> => {
-  const {
-    make, model, number_plate, year,
-    type, nickname, hail_sensitive, wind_sensitive
-  } = updates;
 
-  const result = await pool.query(
-    `UPDATE vehicles SET
-       make = COALESCE($1, make),
-       model = COALESCE($2, model),
-       number_plate = COALESCE($3, number_plate),
-       year = COALESCE($4, year),
-       type = COALESCE($5, type),
-       nickname = COALESCE($6, nickname),
-       hail_sensitive = COALESCE($7, hail_sensitive),
-       wind_sensitive = COALESCE($8, wind_sensitive)
-     WHERE id = $9
-     RETURNING *`,
-    [
-      make, model, number_plate, year,
-      type, nickname, hail_sensitive, wind_sensitive,
-      vehicleId
-    ]
-  );
-
-  return result.rows[0] || null;
+  return data;
 };
 
-/**
- * Delete a vehicle
- */
-export const deleteVehicle = async (vehicleId: string): Promise<boolean> => {
-  const result = await pool.query(
-    `DELETE FROM vehicles WHERE id = $1`,
-    [vehicleId]
-  );
+export const getVehiclesByUser = async (userId: string): Promise<Vehicle[]> => {
+  const { data, error } = await supabase
+    .from("vehicles")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: true });
 
-  return (result.rowCount ?? 0) > 0;
+  if (error) {
+    console.error("Error fetching vehicles:", error);
+    throw new Error("Could not fetch vehicles.");
+  }
+
+  return data;
+};
+
+export const updateVehicle = async (
+  vehicleId: number,
+  updates: Partial<Omit<Vehicle, "id" | "user_id" | "created_at">>
+): Promise<Vehicle> => {
+  const { data, error } = await supabase
+    .from("vehicles")
+    .update(updates)
+    .eq("id", vehicleId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error updating vehicle:", error);
+    throw new Error("Could not update vehicle.");
+  }
+
+  return data;
+};
+
+export const deleteVehicle = async (
+  vehicleId: number,
+  userId: string
+): Promise<void> => {
+  const { error } = await supabase
+    .from("vehicles")
+    .delete()
+    .match({ id: vehicleId, user_id: userId }); // Ensures users can only delete their own vehicles
+
+  if (error) {
+    console.error("Error deleting vehicle:", error);
+    throw new Error("Could not delete vehicle.");
+  }
 };

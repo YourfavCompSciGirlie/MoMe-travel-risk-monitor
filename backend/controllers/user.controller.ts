@@ -1,47 +1,63 @@
-// controllers/user.controller.ts
 
 import { Request, Response } from 'express';
 import * as userService from '../services/user.service';
 
-// GET /api/user/profile
 export const getUserProfile = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user?.id;
-
+    const { userId } = req.params;
     if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(400).json({ error: 'User ID is required.' });
     }
 
     const user = await userService.getUserById(userId);
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'User not found.' });
     }
 
-    return res.status(200).json(user);
+    // Omit sensitive data if necessary before sending
+    const { ...publicProfile } = user;
+
+    return res.status(200).json(publicProfile);
   } catch (err) {
-    console.error('Error fetching user profile:', err);
-    return res.status(500).json({ error: 'Server error' });
+    console.error('Get user profile error:', err);
+    return res.status(500).json({ error: 'An internal server error occurred.' });
   }
 };
 
-// PUT /api/user/preferences
-export const updateUserPreferences = async (req: Request, res: Response) => {
+export const updateCurrentUserPreferences = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user?.id;
-
     if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: 'Unauthorized.' });
     }
 
-    const updated = await userService.updateUserPreferences(userId, req.body);
+    const {
+      language_preference,
+      notification_method,
+      enable_voice_chat,
+      weather_severity_level,
+    } = req.body;
 
-    return res.status(200).json({
-      message: 'Preferences updated successfully',
-      user: updated,
-    });
+    const updates = {
+      language_preference,
+      notification_method,
+      enable_voice_chat,
+      weather_severity_level,
+    };
+
+    // Filter out any undefined values so we only update what's provided
+    const validUpdates = Object.fromEntries(Object.entries(updates).filter(([_, v]) => v !== undefined));
+
+    if (Object.keys(validUpdates).length === 0) {
+        return res.status(400).json({ error: 'No valid preferences provided to update.' });
+    }
+
+    const updatedUser = await userService.updateUserPreferences(userId, validUpdates);
+
+    return res.status(200).json(updatedUser);
   } catch (err) {
-    console.error('Error updating user preferences:', err);
-    return res.status(500).json({ error: 'Server error' });
+    console.error('Update user preferences error:', err);
+    return res.status(500).json({ error: 'An internal server error occurred.' });
   }
 };

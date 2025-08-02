@@ -1,80 +1,91 @@
-// controllers/vehicle.controller.ts
-
 import { Request, Response } from 'express';
 import * as vehicleService from '../services/vehicle.service';
 
-// POST /api/vehicles
-export const createVehicle = async (req: Request, res: Response) => {
+export const createVehicleController = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user?.id;
-    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
 
-    const {
-      make, model, number_plate, year,
-      type, nickname,
-      hail_sensitive, wind_sensitive
-    } = req.body;
+    const { brand, model, number_plate, year, vulnerabilities } = req.body;
+    if (!brand || !model || !number_plate) {
+      return res.status(400).json({ error: 'Missing required fields: brand, model, and number_plate.' });
+    }
 
-    const vehicle = await vehicleService.createVehicle(
-      userId, make, model, number_plate, year,
-      type, nickname, hail_sensitive, wind_sensitive
-    );
+    const newVehicle = await vehicleService.createVehicle({
+      userId,
+      brand,
+      model,
+      number_plate,
+      year,
+      vulnerabilities,
+    });
 
-    return res.status(201).json({ message: 'Vehicle created', vehicle });
+    return res.status(201).json(newVehicle);
   } catch (err) {
     console.error('Create vehicle error:', err);
-    return res.status(500).json({ error: 'Server error' });
+    return res.status(500).json({ error: 'An internal server error occurred.' });
   }
 };
 
-// GET /api/vehicles
-export const getUserVehicles = async (req: Request, res: Response) => {
+export const getVehiclesController = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user?.id;
-    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
 
     const vehicles = await vehicleService.getVehiclesByUser(userId);
-
     return res.status(200).json(vehicles);
   } catch (err) {
     console.error('Get vehicles error:', err);
-    return res.status(500).json({ error: 'Server error' });
+    return res.status(500).json({ error: 'An internal server error occurred.' });
   }
 };
 
-// PUT /api/vehicles/:vehicleId
-export const updateVehicle = async (req: Request, res: Response) => {
+export const updateVehicleController = async (req: Request, res: Response) => {
   try {
-    const vehicleId = req.params.vehicleId;
-    const updates = req.body;
+    const userId = (req as any).user?.id;
+    const { vehicleId } = req.params;
 
-    const updated = await vehicleService.updateVehicle(vehicleId, updates);
-
-    if (!updated) {
-      return res.status(404).json({ error: 'Vehicle not found' });
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    if (!vehicleId) {
+      return res.status(400).json({ error: 'Vehicle ID is required.' });
     }
 
-    return res.status(200).json({ message: 'Vehicle updated', vehicle: updated });
+    // Ensure users can only update their own vehicles (service logic could also enforce this)
+    const vehicles = await vehicleService.getVehiclesByUser(userId);
+    if (!vehicles.some(v => v.id === parseInt(vehicleId, 10))) {
+        return res.status(403).json({ error: 'Forbidden: You do not own this vehicle.' });
+    }
+
+    const updatedVehicle = await vehicleService.updateVehicle(parseInt(vehicleId, 10), req.body);
+    return res.status(200).json(updatedVehicle);
   } catch (err) {
     console.error('Update vehicle error:', err);
-    return res.status(500).json({ error: 'Server error' });
+    return res.status(500).json({ error: 'An internal server error occurred.' });
   }
 };
 
-// DELETE /api/vehicles/:vehicleId
-export const deleteVehicle = async (req: Request, res: Response) => {
+export const deleteVehicleController = async (req: Request, res: Response) => {
   try {
-    const vehicleId = req.params.vehicleId;
+    const userId = (req as any).user?.id;
+    const { vehicleId } = req.params;
 
-    const deleted = await vehicleService.deleteVehicle(vehicleId);
-
-    if (!deleted) {
-      return res.status(404).json({ error: 'Vehicle not found' });
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    if (!vehicleId) {
+      return res.status(400).json({ error: 'Vehicle ID is required.' });
     }
 
-    return res.status(200).json({ message: 'Vehicle deleted' });
+    await vehicleService.deleteVehicle(parseInt(vehicleId, 10), userId);
+    return res.status(204).send(); // 204 No Content is standard for successful deletion
   } catch (err) {
     console.error('Delete vehicle error:', err);
-    return res.status(500).json({ error: 'Server error' });
+    return res.status(500).json({ error: 'An internal server error occurred.' });
   }
 };

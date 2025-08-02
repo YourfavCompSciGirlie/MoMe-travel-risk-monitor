@@ -1,26 +1,27 @@
-// routes/routeRoutes.ts
-
-import express from 'express';
+import { Router } from "express";
 import {
-  createRoute,
-  getUserRoutes,
-  getRouteById
-} from '../controllers/route.controller';
+  createSavedRouteController,
+  getSavedRoutesController,
+  createTripController,
+  getTripsController,
+} from "../controllers/route.controller";
+import authMiddleware from "../middlewares/authMiddleware";
 
-import authMiddleware from '../middlewares/authMiddleware';
+const router = Router();
 
-const router = express.Router();
-
-// All routes require authentication
+// All routes in this file require user authentication.
 router.use(authMiddleware);
 
-// POST /api/routes
-router.post('/', createRoute);
+// Routes for handling "Saved Routes" (user favorites)
+router
+  .route("/saved")
+  .post(createSavedRouteController) // POST /api/routes/saved
+  .get(getSavedRoutesController); // GET /api/routes/saved
 
-// GET /api/routes
-router.get('/', getUserRoutes);
-
-// GET /api/routes/:routeId
-router.get('/:routeId', getRouteById);
+// Routes for handling actual "Trips" (historical journey logs)
+router
+  .route("/trips")
+  .post(createTripController) // POST /api/routes/trips
+  .get(getTripsController); // GET /api/routes/trips
 
 export default router;

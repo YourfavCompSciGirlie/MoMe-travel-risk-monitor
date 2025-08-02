@@ -1,13 +1,5 @@
-// services/auth.service.ts
-
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import pool from '../config/db';
-import { User } from '../types/user';
-
-const SALT_ROUNDS = 10;
-const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_key';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1d';
+import { supabase } from "../config/db";
+import { User } from "../types/user";
 
 export const registerUser = async (
   email: string,
@@ -16,62 +8,90 @@ export const registerUser = async (
   name: string,
   surname: string
 ): Promise<User> => {
-  const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+  // Step 1: Create the user in Supabase's authentication system.
+  const { data: authData, error: authError } =
+    await supabase.auth.admin.createUser({
+      email,
+      password,
+      phone: phone_number,
+      email_confirm: true, // Auto-confirm user for simplicity in this context
+    });
 
-  const result = await pool.query(
-    `INSERT INTO users (email, password_hash, phone_number, name, surname)
-     VALUES ($1, $2, $3, $4, $5)
-     RETURNING id, email, phone_number, name, surname, created_at`,
-    [email, hashedPassword, phone_number, name, surname]
-  );
+  if (authError) {
+    console.error("Error creating auth user:", authError);
+    throw new Error(authError.message);
+  }
 
-  return result.rows[0];
+  if (!authData.user) {
+    throw new Error("User could not be created in Supabase Auth.");
+  }
+
+  // Step 2: Insert the user's profile into the public 'users' table.
+  const { data: profileData, error: profileError } = await supabase
+    .from("users")
+    .insert({
+      id: authData.user.id, // Use the ID from the auth user
+      email,
+      name,
+      surname,
+      phone_number,
+    })
+    .select()
+    .single();
+
+  if (profileError) {
+    console.error("Error creating user profile:", profileError);
+    // Optional: Clean up by deleting the auth user if profile creation fails
+    await supabase.auth.admin.deleteUser(authData.user.id);
+    throw new Error(profileError.message);
+  }
+
+  return profileData;
 };
 
 export const loginUser = async (
   email: string,
   password: string
 ): Promise<{ token: string; user: User }> => {
-  const result = await pool.query(
-    `SELECT id, email, password_hash, phone_number, name, surname, created_at
-     FROM users WHERE email = $1`,
-    [email]
-  );
+  // Step 1: Sign in the user to get a session.
+  const { data: sessionData, error: sessionError } =
+    await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-  const user = result.rows[0];
+  if (sessionError) {
+    throw new Error(sessionError.message || "Invalid email or password");
+  }
+
+  if (!sessionData.session || !sessionData.user) {
+    throw new Error("Could not log in. Session or user not found.");
+  }
+
+  // Step 2: Fetch the user's profile from the public 'users' table.
+  const user = await getUserById(sessionData.user.id);
   if (!user) {
-    throw new Error('Invalid email or password');
+    throw new Error("User profile not found.");
   }
 
-  const isMatch = await bcrypt.compare(password, user.password_hash);
-  if (!isMatch) {
-    throw new Error('Invalid email or password');
-  }
-
-  const token = jwt.sign(
-    { id: user.id, email: user.email },
-    JWT_SECRET,
-    { expiresIn: JWT_EXPIRES_IN }
-  );
-
-  const userResponse: User = {
-    id: user.id,
-    email: user.email,
-    phone_number: user.phone_number,
-    name: user.name,
-    surname: user.surname,
-    created_at: user.created_at,
+  return {
+    token: sessionData.session.access_token,
+    user,
   };
-
-  return { token, user: userResponse };
 };
 
 export const getUserById = async (id: string): Promise<User | null> => {
-  const result = await pool.query(
-    `SELECT id, email, phone_number, name, surname, created_at
-     FROM users WHERE id = $1`,
-    [id]
-  );
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("id", id)
+    .single();
 
-  return result.rows[0] || null;
+  if (error && error.code !== "PGRST116") {
+    // PGRST116 = 'exact one row not found'
+    console.error("Error fetching user by ID:", error);
+    throw error;
+  }
+
+  return data;
 };

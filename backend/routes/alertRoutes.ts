@@ -3,10 +3,11 @@
 import express from 'express';
 import {
   createAlert,
-  getUserAlerts
-} from '../controllers/alert.controller';
+  getUserAlerts,
+  updateAlertStatus,
+} from "../controllers/alert.controller";
 
-import authMiddleware from '../middlewares/authMiddleware';
+import authMiddleware from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
@@ -14,9 +15,12 @@ const router = express.Router();
 router.use(authMiddleware);
 
 // POST /api/alerts
-router.post('/', createAlert);
+router.post("/", createAlert);
 
 // GET /api/alerts
-router.get('/', getUserAlerts);
+router.get("/", getUserAlerts);
+
+// UPDATE /api/alerts
+router.put("/:alertId", updateAlertStatus);
 
 export default router;

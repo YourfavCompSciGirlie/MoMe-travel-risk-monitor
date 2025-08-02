@@ -1,51 +1,42 @@
-// services/user.service.ts
 
-import pool from '../config/db'; // Postgres connection
+import { supabase } from '../config/db';
 import { User } from '../types/user';
 
-/**
- * Get a user by ID (public profile)
- */
 export const getUserById = async (userId: string): Promise<User | null> => {
-  const result = await pool.query(
-    `SELECT id, email, phone_number, name, surname, created_at
-     FROM users WHERE id = $1`,
-    [userId]
-  );
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', userId)
+    .single();
 
-  return result.rows[0] || null;
+  if (error && error.code !== 'PGRST116') { // PGRST116 = 'exact one row not found'
+    console.error('Error fetching user by ID:', error);
+    throw new Error('Could not fetch user profile.');
+  }
+
+  return data;
 };
 
-/**
- * Update basic user settings like language, voice mode, etc.
- */
 export const updateUserPreferences = async (
   userId: string,
-  updates: {
-    language_preference?: string;
-    notification_method?: string;
-    enable_voice_mode?: boolean;
-    weather_severity_level?: number;
+  updates: Partial<Pick<User, 
+    'language_preference' | 
+    'notification_method' | 
+    'enable_voice_chat' | 
+    'weather_severity_level'
+  >>
+): Promise<User> => {
+  const { data, error } = await supabase
+    .from('users')
+    .update(updates)
+    .eq('id', userId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error updating user preferences:', error);
+    throw new Error('Could not update user preferences.');
   }
-): Promise<User | null> => {
-  const {
-    language_preference,
-    notification_method,
-    enable_voice_mode,
-    weather_severity_level,
-  } = updates;
 
-  const result = await pool.query(
-    `UPDATE users
-     SET
-       language_preference = COALESCE($1, language_preference),
-       notification_method = COALESCE($2, notification_method),
-       enable_voice_mode = COALESCE($3, enable_voice_mode),
-       weather_severity_level = COALESCE($4, weather_severity_level)
-     WHERE id = $5
-     RETURNING id, email, phone_number, name, surname, created_at`,
-    [language_preference, notification_method, enable_voice_mode, weather_severity_level, userId]
-  );
-
-  return result.rows[0] || null;
+  return data;
 };
