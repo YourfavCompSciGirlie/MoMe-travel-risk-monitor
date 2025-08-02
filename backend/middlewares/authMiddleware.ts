@@ -1,34 +1,54 @@
 // middlewares/authMiddleware.ts
 
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { supabase } from "../config/db";
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_key';
-
-interface JwtPayload {
-  id: string;
-  email: string;
+declare global {
+  namespace Express {
+    export interface Request {
+      user?: any;
+    }
+  }
 }
-
-const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+const authMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Unauthorized: Missing or invalid token' });
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Authorization token required" });
   }
 
-  const token = authHeader.split(' ')[1];
+  const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    // Use Supabase's built-in method to verify the token and get the user
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(token);
 
-    // Attach user info to request (extend Request type if needed)
-    (req as any).user = decoded;
+    if (error) {
+      console.error("Supabase auth error:", error.message);
+      // Provide a more specific error based on Supabase's response
+      return res
+        .status(401)
+        .json({ message: error.message || "Invalid token" });
+    }
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found for this token" });
+    }
+
+    // Attach the authenticated user object to the request for use in controllers
+    req.user = user;
 
     next();
-  } catch (err) {
-    console.error('JWT Error:', err);
-    return res.status(401).json({ error: 'Unauthorized: Invalid or expired token' });
+  } catch (error: any) {
+    console.error("Auth middleware catch block error:", error);
+    res.status(401).json({ message: "Not authorized, token failed" });
   }
 };
 
