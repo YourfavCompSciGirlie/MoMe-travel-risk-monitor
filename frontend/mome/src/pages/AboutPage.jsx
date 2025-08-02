@@ -2,6 +2,7 @@ import React from 'react';
 import { FaShieldAlt, FaCarCrash, FaCloudShowersHeavy, FaTrafficLight, FaMapMarkedAlt, FaVolumeUp, FaWifi } from 'react-icons/fa';
 import { MdSecurity, MdMoneyOff, MdAccessTime, MdFavorite } from 'react-icons/md';
 import './AboutPage.css';
+import image1 from '../assets/Images/BigCarTop.jpg';
 
 const AboutPage = () => {
   return (
@@ -34,7 +35,7 @@ const AboutPage = () => {
             </div>
             <div className="hero-image-container">
               <img 
-                src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                src={image1} 
                 alt="Traffic monitoring dashboard" 
                 className="hero-image"
               />
