@@ -1,10 +1,19 @@
-// types/user.ts
-
+/**
+ * Represents a record in the 'users' table
+ */
 export interface User {
-  id: string;
-  email: string;
-  phone_number: string;
+  id: number;
   name: string;
   surname: string;
-  created_at: Date;
+  email: string;
+  password_hash: string;
+  created_at: string; // ISO 8601 date string
+  enable_voice_chat: boolean;
+  route_tracking_enabled: boolean;
+  weather_severity_level: string;
+  location_sharing: boolean;
+  notification_method: string;
+  language_preference: string;
+  points: number;
+  level: number;
 }

@@ -1,11 +1,13 @@
-// config/db.ts
-import { Pool } from 'pg';
-import dotenv from 'dotenv';
+import { createClient } from "@supabase/supabase-js";
+import "dotenv/config";
 
-dotenv.config();
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE;
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL, // or configure manually
-});
+console.log("Supabase URL:", supabaseUrl);
 
-export default pool;
+if (!supabaseUrl || !supabaseServiceKey) {
+  throw new Error("Supabase URL and service key are required.");
+}
+
+export const supabase = createClient(supabaseUrl, supabaseServiceKey);
