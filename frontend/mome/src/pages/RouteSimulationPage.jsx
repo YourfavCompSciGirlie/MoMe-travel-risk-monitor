@@ -22,7 +22,7 @@ const RouteSimulation = () => {
   const [alternateRoute, setAlternateRoute] = useState(null);
   const [mapPreview, setMapPreview] = useState(null);
 
-  const GEOAPIFY_API_KEY = 'cffc724f3d5f4608bea5c1fef4afbc3e';
+const GEOAPIFY_API_KEY = import.meta.env.VITE_GEOAPIFY_API_KEY;
 
   // Sample locations in South Africa for autocomplete suggestions
   const southAfricaLocations = [
