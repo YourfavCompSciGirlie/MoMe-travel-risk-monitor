@@ -13,33 +13,175 @@ const LiveRoute = () => {
   const mapRef = useRef(null);
   const GEOAPIFY_API_KEY = 'c58ea4effaee4dc4aec1ff3b865de50b';
 
-  // Enhanced alerts data with risk factors
-  const riskFactors = {
+  // All possible South Africa-specific alerts
+  const allRiskFactors = {
     security: [
-      { id: 1, type: 'hijacking', message: 'High hijacking risk zone ahead (next 2km)', severity: 'critical', location: { lat: -26.2041, lng: 28.0473 }, radius: 500, time: '2 min ago' },
-      { id: 2, type: 'theft', message: 'Vehicle break-in hotspot reported in this area', severity: 'high', location: { lat: -26.2050, lng: 28.0480 }, radius: 300, time: '5 min ago' }
+      { 
+        id: 1, 
+        type: 'hijacking', 
+        message: 'High hijacking risk reported in Alexandra township (next 1.5km) - avoid stopping', 
+        severity: 'critical', 
+        location: { lat: -26.1033, lng: 28.0874 }, 
+        radius: 800, 
+        time: '5 min ago',
+        advice: 'Keep windows closed and doors locked. Avoid stopping at traffic lights if safe to do so.'
+      },
+      { 
+        id: 2, 
+        type: 'theft', 
+        message: 'Smash-and-grab hotspot reported on M1 highway near Grayston Drive', 
+        severity: 'high', 
+        location: { lat: -26.0987, lng: 28.0543 }, 
+        radius: 500, 
+        time: '15 min ago',
+        advice: 'Remove valuables from sight and keep bags on the floor.'
+      },
+      { 
+        id: 3, 
+        type: 'hijacking', 
+        message: 'Carjacking incidents reported near Noord Street taxi rank', 
+        severity: 'critical', 
+        location: { lat: -26.2041, lng: 28.0400 }, 
+        radius: 1000, 
+        time: 'Just now',
+        advice: 'Consider alternative route via Bree Street. Be extremely vigilant.'
+      }
     ],
     weather: [
-      { id: 3, type: 'heavy-rain', message: 'Heavy rainfall expected (25mm/h) - reduced visibility', severity: 'high', location: { lat: -26.2035, lng: 28.0465 }, radius: 2000, time: '10 min ago' },
-      { id: 4, type: 'hail', message: 'Hailstorm warning - seek shelter if possible', severity: 'critical', location: { lat: -26.2045, lng: 28.0475 }, radius: 1500, time: 'Just now' },
-      { id: 5, type: 'fog', message: 'Dense fog patch (visibility < 100m)', severity: 'medium', location: { lat: -26.2040, lng: 28.0485 }, radius: 1000, time: '15 min ago' }
+      { 
+        id: 4, 
+        type: 'heavy-rain', 
+        message: 'Severe thunderstorms with 40mm rainfall expected in Johannesburg CBD', 
+        severity: 'high', 
+        location: { lat: -26.2041, lng: 28.0473 }, 
+        radius: 5000, 
+        time: '20 min ago',
+        advice: 'Reduce speed. Possible flash flooding in low-lying areas.'
+      },
+      { 
+        id: 5, 
+        type: 'hail', 
+        message: 'Golf ball-sized hail reported approaching Sandton area', 
+        severity: 'critical', 
+        location: { lat: -26.1070, lng: 28.0567 }, 
+        radius: 3000, 
+        time: '10 min ago',
+        advice: 'Seek covered parking immediately if possible. Hail causing vehicle damage.'
+      },
+      { 
+        id: 6, 
+        type: 'fog', 
+        message: 'Dense fog bank reducing visibility to <50m on N1 near Centurion', 
+        severity: 'medium', 
+        location: { lat: -25.8603, lng: 28.1894 }, 
+        radius: 4000, 
+        time: '30 min ago',
+        advice: 'Use fog lights and maintain safe following distance.'
+      },
+      { 
+        id: 7, 
+        type: 'heatwave', 
+        message: 'Extreme heat warning (38°C) - road surface temperatures reaching 55°C', 
+        severity: 'medium', 
+        location: { lat: -26.2041, lng: 28.0473 }, 
+        radius: 10000, 
+        time: '1 hour ago',
+        advice: 'Check tire pressure. Carry extra water in case of breakdown.'
+      }
     ],
     traffic: [
-      { id: 6, type: 'congestion', message: 'Severe traffic congestion (30min delay)', severity: 'medium', location: { lat: -26.2030, lng: 28.0470 }, radius: 1000, time: '8 min ago' },
-      { id: 7, type: 'road-closure', message: 'Temporary road closure - detour active', severity: 'high', location: { lat: -26.2048, lng: 28.0460 }, radius: 800, time: 'Just now' },
-      { id: 8, type: 'accident', message: 'Multi-vehicle accident reported ahead', severity: 'high', location: { lat: -26.2038, lng: 28.0478 }, radius: 500, time: '3 min ago' }
+      { 
+        id: 8, 
+        type: 'protest', 
+        message: 'Service delivery protest blocking R55 near Soshanguve', 
+        severity: 'high', 
+        location: { lat: -25.5146, lng: 28.0944 }, 
+        radius: 2000, 
+        time: '45 min ago',
+        advice: 'Avoid area. Protesters reported burning tires.'
+      },
+      { 
+        id: 9, 
+        type: 'accident', 
+        message: 'Multi-vehicle pileup on N3 southbound near Gillooly\'s Interchange', 
+        severity: 'high', 
+        location: { lat: -26.1763, lng: 28.1492 }, 
+        radius: 3000, 
+        time: 'Just now',
+        advice: 'Major delays expected. Consider alternative route via M2.'
+      },
+      { 
+        id: 10, 
+        type: 'road-closure', 
+        message: 'Emergency roadworks on M1 between Empire Road and Oxford Road', 
+        severity: 'medium', 
+        location: { lat: -26.1804, lng: 28.0207 }, 
+        radius: 1500, 
+        time: '1 hour ago',
+        advice: 'Left lane closed. Expect 20-minute delays.'
+      }
     ],
     road: [
-      { id: 9, type: 'potholes', message: 'Multiple deep potholes reported', severity: 'low', location: { lat: -26.2043, lng: 28.0468 }, radius: 400, time: '20 min ago' },
-      { id: 10, type: 'flooding', message: 'Road flooding - avoid if possible', severity: 'high', location: { lat: -26.2032, lng: 28.0472 }, radius: 600, time: '12 min ago' }
+      { 
+        id: 11, 
+        type: 'potholes', 
+        message: 'Severe potholes reported on R24 towards OR Tambo Airport', 
+        severity: 'medium', 
+        location: { lat: -26.1369, lng: 28.2416 }, 
+        radius: 3000, 
+        time: '2 hours ago',
+        advice: 'Reduce speed, especially in right lane where deepest potholes are reported.'
+      },
+      { 
+        id: 12, 
+        type: 'flooding', 
+        message: 'Flash flooding on William Nicol Drive near Fourways', 
+        severity: 'high', 
+        location: { lat: -26.0369, lng: 28.0134 }, 
+        radius: 800, 
+        time: '15 min ago',
+        advice: 'Do not attempt to cross flooded roads. Turn around.'
+      },
+      { 
+        id: 13, 
+        type: 'animals', 
+        message: 'Livestock crossing on R562 near Diepsloot', 
+        severity: 'medium', 
+        location: { lat: -25.9332, lng: 27.9841 }, 
+        radius: 2000, 
+        time: 'Just now',
+        advice: 'Reduce speed. Cattle frequently crossing this stretch at dusk.'
+      }
     ]
   };
+
+  // Function to get random subset of alerts
+  const getRandomAlerts = () => {
+    const randomAlerts = [];
+    
+    // Get 1-2 random alerts from each category
+    Object.keys(allRiskFactors).forEach(category => {
+      const alerts = allRiskFactors[category];
+      const count = Math.floor(Math.random() * 2) + 1; // 1 or 2 alerts
+      const shuffled = [...alerts].sort(() => 0.5 - Math.random());
+      randomAlerts.push(...shuffled.slice(0, count));
+    });
+    
+    // Shuffle all selected alerts and limit to 3-5 total
+    return randomAlerts.sort(() => 0.5 - Math.random())
+                      .slice(0, Math.floor(Math.random() * 3) + 3); // 3-5 alerts
+  };
+
+  // Initialize with random alerts
+  useEffect(() => {
+    setCurrentAlerts(getRandomAlerts());
+  }, []);
 
   // Check if user is approaching any risk zones
   const checkRiskZones = (location) => {
     const newAlerts = [];
 
-    Object.values(riskFactors).forEach(category => {
+    Object.values(allRiskFactors).forEach(category => {
       category.forEach(alert => {
         if (isInRadius(location, alert.location, alert.radius)) {
           newAlerts.push(alert);
@@ -48,15 +190,13 @@ const LiveRoute = () => {
     });
 
     if (newAlerts.length > 0) {
-      setCurrentAlerts(newAlerts);
+      setCurrentAlerts(prev => [...prev, ...newAlerts]);
 
       if (voiceAlertsEnabled) {
         const alertMessages = newAlerts.map(a => a.message).join('. ');
         const utterance = new SpeechSynthesisUtterance(`Warning: ${alertMessages}`);
         window.speechSynthesis.speak(utterance);
       }
-    } else if (currentAlerts.length > 0) {
-      setCurrentAlerts([]);
     }
   };
 
@@ -75,12 +215,12 @@ const LiveRoute = () => {
     return distance <= radius;
   };
 
-  // Simulate route progress
+  // Simulate route progress through Johannesburg
   const simulateRouteProgress = () => {
     const simulatedPath = [
-      { lat: -26.2041, lng: 28.0473, timestamp: Date.now() + 10000 },
-      { lat: -26.2045, lng: 28.0475, timestamp: Date.now() + 20000 },
-      { lat: -26.2050, lng: 28.0480, timestamp: Date.now() + 30000 }
+      { lat: -26.2041, lng: 28.0473, timestamp: Date.now() + 10000 },  // Johannesburg CBD
+      { lat: -26.1070, lng: 28.0567, timestamp: Date.now() + 20000 },  // Sandton
+      { lat: -26.0369, lng: 28.0134, timestamp: Date.now() + 30000 }   // Fourways
     ];
     setRoutePath(simulatedPath);
   };
@@ -106,11 +246,20 @@ const LiveRoute = () => {
         },
         (error) => {
           console.error('Error getting location:', error);
+          // Default to Johannesburg coordinates if geolocation fails
+          const jhbLocation = { lat: -26.2041, lng: 28.0473 };
+          setUserLocation(jhbLocation);
+          checkRiskZones(jhbLocation);
         },
         { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
       );
 
       return () => navigator.geolocation.clearWatch(watchId);
+    } else {
+      // Default to Johannesburg coordinates if geolocation not supported
+      const jhbLocation = { lat: -26.2041, lng: 28.0473 };
+      setUserLocation(jhbLocation);
+      checkRiskZones(jhbLocation);
     }
   }, []);
 
@@ -143,13 +292,15 @@ const LiveRoute = () => {
       'hijacking': '🚨',
       'theft': '👜',
       'heavy-rain': '🌧️',
-      'hail': '❄️',
+      'hail': '🧊',
       'fog': '🌫️',
-      'congestion': '🚗',
+      'protest': '✊',
       'road-closure': '🚧',
       'accident': '🚑',
       'potholes': '🕳️',
-      'flooding': '🌊'
+      'flooding': '🌊',
+      'heatwave': '🔥',
+      'animals': '🐄'
     };
     return icons[type] || '⚠️';
   };
@@ -199,7 +350,7 @@ const LiveRoute = () => {
 
       {/* Main Content Area */}
       <div className="main-content">
-        {/* Map Container - Now takes full available space */}
+        {/* Map Container */}
         <div className="map-container">
           {userLocation ? (
             <iframe
@@ -220,7 +371,7 @@ const LiveRoute = () => {
           )}
         </div>
 
-        {/* Side Panel - Now overlays on top of map */}
+        {/* Side Panel */}
         <div className={`side-panel ${isMinimized ? 'minimized' : ''}`}>
           <div className="panel-header" onClick={() => setIsMinimized(!isMinimized)}>
             <div className="tabs">
@@ -258,6 +409,9 @@ const LiveRoute = () => {
                             <span className="alert-time">{alert.time}</span>
                           </div>
                           <p>{alert.message}</p>
+                          <div className="alert-advice">
+                            <strong>Safety Advice:</strong> {alert.advice}
+                          </div>
                           <div className="alert-actions">
                             <button 
                               className="reroute-btn"
@@ -303,10 +457,10 @@ const LiveRoute = () => {
                   <div className="route-steps">
                     <h4>Directions</h4>
                     <ol>
-                      <li>Continue on Main St for 2.5 km</li>
-                      <li>Turn left onto 2nd Ave</li>
-                      <li>Merge onto Highway 1</li>
-                      <li>Take exit 14 toward Downtown</li>
+                      <li>Continue on M1 North for 5.2 km</li>
+                      <li>Take exit 14 toward Sandton/Rivonia Road</li>
+                      <li>Merge onto Rivonia Road</li>
+                      <li>Turn right onto William Nicol Drive</li>
                     </ol>
                   </div>
                 </div>
