@@ -10,32 +10,43 @@ import {
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
   const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState({ email: '', password: '' });
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+    general: ''
+  });
+  const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState({
     email: false,
     password: false
   });
+  const [message, setMessage] = useState('');
 
   const validateForm = () => {
     let valid = true;
-    const newErrors = { email: '', password: '' };
+    const newErrors = {
+      email: '',
+      password: '',
+      general: ''
+    };
 
-    if (!email) {
+    // Email validation
+    if (!formData.email) {
       newErrors.email = 'Email is required';
       valid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email is invalid';
       valid = false;
     }
 
-    if (!password) {
+    // Password validation
+    if (!formData.password) {
       newErrors.password = 'Password is required';
-      valid = false;
-    } else if (password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
       valid = false;
     }
 
@@ -43,12 +54,59 @@ const Login = () => {
     return valid;
   };
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: '' });
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      // Simulate login
-      localStorage.setItem('token', 'dummy_token');
-      navigate('/dashboard');
+    setErrors({ email: '', password: '', general: '' });
+    setMessage('');
+    
+    if (!validateForm()) return;
+    
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Login failed');
+      }
+
+      // Store token and user data
+      localStorage.setItem('token', result.token);
+      localStorage.setItem('user', JSON.stringify(result.user));
+      
+      setMessage('Login successful! Redirecting...');
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1500);
+    } catch (error) {
+      console.error('Login error:', error);
+      setErrors({
+        ...errors,
+        general: error.message || 'Invalid email or password'
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -57,7 +115,11 @@ const Login = () => {
     validateForm();
   };
 
-  // Styles
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  // Styles (same as your signup component but simplified for login)
   const styles = {
     loginContainer: {
       display: 'flex',
@@ -167,18 +229,7 @@ const Login = () => {
       color: '#FFFFFF',
       transition: 'all 0.3s ease',
       background: 'rgba(255, 255, 255, 0.1)',
-      backdropFilter: 'blur(5px)',
-      // Add placeholder styling
-      '::placeholder': {
-        color: 'rgba(255, 255, 255, 0.7)',
-        opacity: 1
-      },
-      ':-ms-input-placeholder': {
-        color: 'rgba(255, 255, 255, 0.7)'
-      },
-      '::-ms-input-placeholder': {
-        color: 'rgba(255, 255, 255, 0.7)'
-      }
+      backdropFilter: 'blur(5px)'
     },
     inputFieldError: {
       borderColor: '#FF6B6B',
@@ -250,7 +301,9 @@ const Login = () => {
       fontWeight: 600,
       cursor: 'pointer',
       transition: 'all 0.3s ease',
-      marginTop: '10px'
+      marginTop: '10px',
+      opacity: isLoading ? 0.7 : 1,
+      cursor: isLoading ? 'not-allowed' : 'pointer'
     },
     loginFooter: {
       textAlign: 'center',
@@ -266,11 +319,16 @@ const Login = () => {
       color: 'white',
       textDecoration: 'none',
       fontWeight: 500
+    },
+    message: {
+      textAlign: 'center',
+      margin: '10px 0',
+      color: '#FFFFFF',
+      fontSize: '14px'
     }
   };
 
-  // Since inline styles don't support pseudo-elements like ::placeholder,
-  // we'll create a style tag for the placeholder styles
+  // Placeholder styles
   const placeholderStyles = `
     input::placeholder {
       color: rgba(255, 255, 255, 0.7) !important;
@@ -285,7 +343,6 @@ const Login = () => {
 
   return (
     <div style={styles.loginContainer}>
-      {/* Add the style tag for placeholder styling */}
       <style>{placeholderStyles}</style>
       
       <div style={styles.bgBubbles}>
@@ -300,6 +357,18 @@ const Login = () => {
           <p style={styles.loginHeaderP}>Please enter your credentials</p>
         </div>
 
+        {message && <div style={styles.message}>{message}</div>}
+        {errors.general && (
+          <div style={{
+            ...styles.errorMessage,
+            marginBottom: '20px',
+            justifyContent: 'center'
+          }}>
+            <FiAlertCircle style={styles.errorIcon} />
+            <span>{errors.general}</span>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} style={styles.loginForm} noValidate>
           <div style={styles.formGroup}>
             <label style={styles.formLabel}>Email</label>
@@ -307,11 +376,9 @@ const Login = () => {
               <FiAtSign style={styles.inputIcon} />
               <input
                 type="email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (errors.email) setErrors({ ...errors, email: '' });
-                }}
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 onFocus={() => setIsFocused({ ...isFocused, email: true })}
                 onBlur={() => handleBlur('email')}
                 placeholder="Enter your email"
@@ -337,11 +404,9 @@ const Login = () => {
               <FiLock style={styles.inputIcon} />
               <input
                 type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (errors.password) setErrors({ ...errors, password: '' });
-                }}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
                 onFocus={() => setIsFocused({ ...isFocused, password: true })}
                 onBlur={() => handleBlur('password')}
                 placeholder="Enter your password"
@@ -355,7 +420,7 @@ const Login = () => {
               <button
                 type="button"
                 style={styles.passwordToggle}
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={togglePasswordVisibility}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <FiEyeOff /> : <FiEye />}
@@ -379,8 +444,8 @@ const Login = () => {
             </Link>
           </div>
 
-          <button type="submit" style={styles.loginButton}>
-            Sign In
+          <button type="submit" style={styles.loginButton} disabled={isLoading}>
+            {isLoading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
 
